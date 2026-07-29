@@ -21,10 +21,10 @@ export const routes: Routes = [
       },
 
       {
-        path: 'kpi-managment',
+        path: 'kpi-management',
         loadChildren: () =>
-          import('./features/kpi-managment/routes').then(
-            m => m.KPI_OVERVIEW_ROUTES
+          import('./features/kpi-management/routes').then(
+            m => m.KPI_MANAGEMENT_ROUTES
           )
       },
 
@@ -53,10 +53,10 @@ export const routes: Routes = [
       },
 
       {
-        path: 'predictions',
+        path: 'forecasting',
         loadChildren: () =>
-          import('./features/predictions/routes').then(
-            m => m.PREDICTIONS_ROUTES
+          import('./features/forecasting/routes').then(
+            m => m.FORECASTING_ROUTES
           )
       },
 
