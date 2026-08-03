@@ -145,7 +145,14 @@
             <artifactId>spring-security-web</artifactId>
             <version>7.0.5</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.6.3</version>
+        </dependency>
 	</dependencies>
+
 
 	<build>
 		<plugins>

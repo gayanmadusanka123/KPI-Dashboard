@@ -1,6 +1,7 @@
 package com.ucsc.kpi_dashboard.Configurations;
 
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.Authentication;
@@ -37,5 +38,16 @@ public class JwtProvider {
         }
 
         return String.join(",", auths);
+    }
+
+    public String getEmailFromToken(String jwtToken) {
+        jwtToken =  jwtToken.substring(7);
+
+        Claims claims = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(jwtToken).getPayload();
+
+        return String.valueOf(claims.get("email"));
     }
 }
