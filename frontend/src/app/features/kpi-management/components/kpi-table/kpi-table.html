@@ -372,95 +372,70 @@
 
     @for (kpi of filteredKpis; track kpi.id) {
 
-    <div class="kpi-card">
+    <div class="kpi-card" [style.border-top-color]="getStatusColor(kpi.status)">
 
-        <div class="card-header">
+        <div class="card-head">
+
+            <div class="card-title-wrap">
+
+                <div class="card-name" [title]="kpi.name">{{ kpi.name }}</div>
+
+                <div class="card-id">{{ kpi.id }} · {{ kpi.frequency }}</div>
+
+            </div>
+
+            <div class="card-menu" [matMenuTriggerFor]="actionMenu"
+                (click)="$event.stopPropagation(); selectedKpi = kpi">
+
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                    <circle cx="12" cy="12" r="1" />
+
+                    <circle cx="19" cy="12" r="1" />
+
+                    <circle cx="5" cy="12" r="1" />
+
+                </svg>
+
+            </div>
+
+        </div>
+
+        <div class="card-tags">
+
+            <span class="card-tag">{{ kpi.category }}</span>
+
+            @if(kpi.dept) {
+
+            <span class="card-tag">{{ kpi.dept }}</span>
+
+            }
+
+        </div>
+
+        <div class="card-score-row">
 
             <div>
 
-                <h3>{{ kpi.name }}</h3>
+                <div class="card-score" [style.color]="getStatusColor(kpi.status)">{{ kpi.score }}</div>
 
-                <small>{{ kpi.id }}</small>
-
-            </div>
-
-            <button mat-icon-button [matMenuTriggerFor]="actionMenu" (click)="selectedKpi = kpi">
-
-                <mat-icon>more_vert</mat-icon>
-
-            </button>
-
-        </div>
-
-        <div class="card-category">
-
-            <span>{{ kpi.category }}</span>
-
-        </div>
-
-        <div class="score-section">
-
-            <div class="score" [ngClass]="{
-                    'good': kpi.status === 'On Track' || kpi.status === 'Exceeded',
-                    'warn': kpi.status === 'At Risk',
-                    'bad': kpi.status === 'Off Track'
-                }">
-
-                {{ kpi.score }}
+                <div class="card-score-lbl">Performance score</div>
 
             </div>
 
-            <small>Performance Score</small>
+            <span class="badge" [ngClass]="{
 
-        </div>
+                'badge-info': kpi.status === 'Exceeded',
 
-        <div class="sparkline">
+                'badge-good': kpi.status === 'On Track',
 
-            <svg viewBox="0 0 220 40">
+                'badge-warn': kpi.status === 'At Risk',
 
-                <polyline points="0,30 35,26 70,20 105,22 140,15 175,10 220,6" fill="none" stroke="currentColor"
-                    stroke-width="3" />
+                'badge-bad': kpi.status === 'Off Track'
 
-            </svg>
+            }">
 
-        </div>
-
-        <div class="card-details">
-
-            <div>
-
-                <label>Target</label>
-
-                <strong>{{ kpi.target }}</strong>
-
-            </div>
-
-            <div>
-
-                <label>Actual</label>
-
-                <strong>{{ kpi.actual }}</strong>
-
-            </div>
-
-        </div>
-
-        <div class="card-footer">
-
-            <div>
-
-                <label>Owner</label>
-
-                <span>{{ kpi.owner }}</span>
-
-            </div>
-
-            <span class="status-badge" [ngClass]="{
-                    'badge-good': kpi.status === 'On Track',
-                    'badge-info': kpi.status === 'Exceeded',
-                    'badge-warn': kpi.status === 'At Risk',
-                    'badge-bad': kpi.status === 'Off Track'
-                }">
+                <span class="dot"></span>
 
                 {{ kpi.status }}
 
@@ -468,11 +443,112 @@
 
         </div>
 
-        <button class="details-btn" (click)="viewKpi(kpi)">
+        <div class="card-chart">
 
-            View Details
+            <svg viewBox="0 0 240 44" preserveAspectRatio="none">
 
-        </button>
+                <polyline [attr.points]="getSparklinePath(kpi)" fill="none" [attr.stroke]="getStatusColor(kpi.status)"
+                    stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
+
+                <circle [attr.cx]="getLastSparklinePoint(kpi).x" [attr.cy]="getLastSparklinePoint(kpi).y" r="3"
+                    [attr.fill]="getStatusColor(kpi.status)" />
+
+            </svg>
+
+        </div>
+
+        <div class="card-stats">
+
+            <div class="card-stat">
+
+                <div class="cs-lbl">Target</div>
+
+                <div class="cs-val">{{ kpi.target }}</div>
+
+            </div>
+
+            <div class="card-stat">
+
+                <div class="cs-lbl">Actual</div>
+
+                <div class="cs-val">{{ kpi.actual }}</div>
+
+            </div>
+
+        </div>
+
+        <div class="card-progress">
+
+            <div class="card-progress-top">
+
+                <span>vs. target</span>
+
+                <span>{{ getProgressPct(kpi) }}%</span>
+
+            </div>
+
+            <div class="card-progress-track">
+
+                <div class="card-progress-fill" [style.width.%]="getProgressPct(kpi)"
+                    [style.background]="getStatusColor(kpi.status)"></div>
+
+            </div>
+
+        </div>
+
+        <div class="card-owner-row">
+
+            <span>{{ kpi.owner }}</span>
+
+            <span class="trend" [ngClass]="{
+
+                'up': kpi.trend === 'up',
+
+                'down': kpi.trend === 'down',
+
+                'flat': kpi.trend === 'flat'
+
+            }">
+
+                @if(kpi.trend === 'up'){ ▲ Improving }
+
+                @if(kpi.trend === 'down'){ ▼ Declining }
+
+                @if(kpi.trend === 'flat'){ ▬ Stable }
+
+            </span>
+
+        </div>
+
+        <div class="card-footer">
+
+            <button class="btn btn-primary btn-block" (click)="viewKpi(kpi)">View full details</button>
+
+            <div class="icon-btn" title="Edit KPI" (click)="$event.stopPropagation(); editKpi(kpi)">
+
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                    <path d="M12 20h9" />
+
+                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+
+                </svg>
+
+            </div>
+
+            <div class="icon-btn" title="Delete KPI" (click)="$event.stopPropagation(); deleteKpi(kpi)">
+
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                    <path d="M3 6h18" />
+
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+
+                </svg>
+
+            </div>
+
+        </div>
 
     </div>
 

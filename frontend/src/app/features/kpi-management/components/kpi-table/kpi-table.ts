@@ -131,4 +131,54 @@ export class KpiTable implements OnChanges {
     console.log('Delete', kpi);
   }
 
+  sparklines: { [key: string]: number[] } = {
+    'KPI-0031': [96, 99, 101, 98, 103, 102, 105, 104.2],
+    'KPI-0018': [94, 96, 97, 99, 98, 100, 101, 102.4],
+    'KPI-0007': [99, 98, 99, 97, 98, 98, 97, 97.7],
+    'KPI-0052': [88, 85, 82, 80, 77, 75, 73, 71.4],
+    'KPI-0044': [98, 96, 93, 91, 90, 88, 89, 87.7],
+    'KPI-0009': [102, 99, 96, 94, 92, 90, 89, 88.9],
+    'KPI-0061': [98, 101, 103, 105, 104, 107, 108, 109.6],
+    'KPI-0025': [103, 101, 99, 98, 97, 96, 95.5, 95.0],
+    'KPI-0026': [98, 96, 94, 92, 90, 93.0, 93.0, 93.0]
+  };
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'Exceeded': return '#3B6FD6';
+      case 'On Track': return '#1B8A5A';
+      case 'At Risk': return '#B7791F';
+      case 'Off Track': return '#C13F3F';
+      default: return '#3B6FD6';
+    }
+  }
+
+  getProgressPct(kpi: Kpi): number {
+    if (!kpi.score) return 0;
+    return Math.max(6, Math.min(100, Math.round((kpi.score / 120) * 100)));
+  }
+
+  private getSparklinePointsArray(kpi: Kpi): { x: number; y: number }[] {
+    const points = this.sparklines[kpi.id] || [95, 96, 98, 97, 99, 100, 101, kpi.score || 100];
+    const w = 240, h = 44, pad = 4;
+    const min = Math.min(...points);
+    const max = Math.max(...points);
+    const range = (max - min) || 1;
+    const step = (w - pad * 2) / (points.length - 1);
+    return points.map((v, i) => ({
+      x: Number((pad + i * step).toFixed(1)),
+      y: Number((pad + (h - pad * 2) * (1 - (v - min) / range)).toFixed(1))
+    }));
+  }
+
+  getSparklinePath(kpi: Kpi): string {
+    const pts = this.getSparklinePointsArray(kpi);
+    return pts.map(p => `${p.x},${p.y}`).join(' ');
+  }
+
+  getLastSparklinePoint(kpi: Kpi): { x: number; y: number } {
+    const pts = this.getSparklinePointsArray(kpi);
+    return pts[pts.length - 1] || { x: 236, y: 22 };
+  }
+
 }

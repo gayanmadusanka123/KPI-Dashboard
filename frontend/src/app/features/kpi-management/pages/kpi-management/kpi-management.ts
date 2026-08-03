@@ -112,7 +112,22 @@ export class KpiManagement {
       status: 'Off Track',
       trend: 'down',
       updated: '3 days ago'
-    }
+    },
+
+    {
+      id: 'KPI-0026',
+      name: 'Sales Conversion',
+      category: 'Growth',
+      dept: 'Sales',
+      owner: 'A. Fernando',
+      frequency: 'Monthly',
+      target: '22.0%',
+      actual: '19.3%',
+      score: 87.7,
+      status: 'At Risk',
+      trend: 'down',
+      updated: '2 days ago'
+    },
 
   ];
 

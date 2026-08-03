@@ -597,179 +597,264 @@
 =========================== */
 
 .card-grid {
-
     display: grid;
-
     grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    width: 100%;
+}
 
-    gap: 20px;
+@media (max-width: 1024px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
 
+@media (max-width: 640px) {
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .kpi-card {
-
-    background: white;
-
-    border: 1px solid var(--border);
-
-    border-top: 4px solid var(--primary);
-
-    border-radius: 12px;
-
-    padding: 18px;
-
+    background: var(--surface, #ffffff);
+    border: 1px solid var(--line, #e2e4ea);
+    border-radius: 10px;
+    padding: 10px 12px 9px;
     display: flex;
-
     flex-direction: column;
-
-    gap: 14px;
-
-    transition: .2s;
-
+    border-top: 3px solid var(--good, #1b8a5a);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .kpi-card:hover {
-
-    transform: translateY(-3px);
-
-    box-shadow: 0 8px 18px rgba(0, 0, 0, .08);
-
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-.card-header {
-
+.card-head {
     display: flex;
-
-    justify-content: space-between;
-
     align-items: flex-start;
-
-}
-
-.card-header h3 {
-
-    margin: 0;
-
-    font-size: 16px;
-
-}
-
-.card-header small {
-
-    color: var(--text-secondary);
-
-}
-
-.card-category span {
-
-    background: #f2f4f7;
-
-    padding: 4px 10px;
-
-    border-radius: 20px;
-
-    font-size: 12px;
-
-}
-
-.score-section {
-
-    text-align: center;
-
-}
-
-.score {
-
-    font-size: 34px;
-
-    font-weight: 700;
-
-}
-
-.sparkline {
-
-    color: var(--primary);
-
-}
-
-.sparkline svg {
-
-    width: 100%;
-
-    height: 40px;
-
-}
-
-.card-details {
-
-    display: flex;
-
     justify-content: space-between;
-
+    margin-bottom: 4px;
 }
 
-.card-details label {
+.card-title-wrap {
+    min-width: 0;
+}
 
+.card-name {
+    font-weight: 700;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-id {
+    font-family: var(--font-mono, monospace);
+    font-size: 9.5px;
+    color: var(--muted, #6b7280);
+    margin-top: 1px;
+}
+
+.card-menu {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted, #6b7280);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.card-menu:hover {
+    background: var(--canvas, #f3f4f7);
+    color: var(--ink, #12151c);
+}
+
+.card-tags {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+
+.card-tag {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--muted, #6b7280);
+    background: var(--canvas, #f3f4f7);
+    border: 1px solid var(--line, #e2e4ea);
+    padding: 1px 6px;
+    border-radius: 20px;
+}
+
+.card-score-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.card-score {
+    font-family: var(--font-display, sans-serif);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.card-score-lbl {
+    font-size: 8.5px;
+    color: var(--muted, #6b7280);
+    font-family: var(--font-mono, monospace);
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+.card-chart {
+    margin: 2px 0 6px;
+}
+
+.card-chart svg {
+    width: 100%;
+    height: 30px;
     display: block;
+}
 
-    color: var(--text-secondary);
+.card-stats {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+}
 
-    font-size: 12px;
+.card-stat {
+    flex: 1;
+    background: var(--canvas, #f3f4f7);
+    border-radius: 6px;
+    padding: 4px 7px;
+}
 
+.card-stat .cs-lbl {
+    font-size: 8.5px;
+    text-transform: uppercase;
+    color: var(--muted, #6b7280);
+    font-family: var(--font-mono, monospace);
+    margin-bottom: 2px;
+}
+
+.card-stat .cs-val {
+    font-family: var(--font-mono, monospace);
+    font-size: 11.5px;
+    font-weight: 600;
+}
+
+.card-progress {
+    margin-bottom: 6px;
+}
+
+.card-progress-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9.5px;
+    color: var(--muted, #6b7280);
+    margin-bottom: 3px;
+    font-family: var(--font-mono, monospace);
+}
+
+.card-progress-track {
+    height: 5px;
+    background: var(--canvas, #f3f4f7);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.card-progress-fill {
+    height: 100%;
+    border-radius: 3px;
+}
+
+.card-owner-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--muted, #6b7280);
+    margin-bottom: 6px;
+    font-family: var(--font-mono, monospace);
 }
 
 .card-footer {
-
     display: flex;
-
-    justify-content: space-between;
-
+    gap: 5px;
+    margin-top: auto;
     align-items: center;
-
 }
 
-.details-btn {
+.card-footer .btn {
+    padding: 5px 8px;
+    font-size: 11px;
+}
 
-    width: 100%;
+.card-footer .icon-btn {
+    width: 25px;
+    height: 25px;
+    border-radius: 6px;
+}
 
-    padding: 10px;
-
-    border: none;
-
-    border-radius: 8px;
-
-    background: var(--primary);
-
-    color: white;
-
+.btn {
+    font-family: var(--font-body, sans-serif);
+    font-weight: 600;
+    font-size: 12.5px;
+    border-radius: 7px;
+    padding: 8px 12px;
     cursor: pointer;
-
+    border: 1px solid var(--line, #e2e4ea);
+    background: var(--surface, #ffffff);
+    color: #3A3F4B;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1;
 }
 
-.details-btn:hover {
-
-    background: #1d4ed8;
-
+.btn:hover {
+    background: var(--line-soft, #edeef2);
 }
 
-@media(max-width:1100px) {
-
-    .card-grid {
-
-        grid-template-columns: repeat(2, 1fr);
-
-    }
-
+.btn-primary {
+    background: var(--navy, #1C2541);
+    color: #fff;
+    border-color: var(--navy, #1C2541);
 }
 
-@media(max-width:700px) {
+.btn-primary:hover {
+    background: #26314F;
+}
 
-    .card-grid {
+.btn-block {
+    width: 100%;
+    justify-content: center;
+}
 
-        grid-template-columns: 1fr;
+.icon-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted, #6b7280);
+    cursor: pointer;
+    border: 1px solid var(--line, #e2e4ea);
+    background: var(--surface, #ffffff);
+    flex-shrink: 0;
+}
 
-    }
-
+.icon-btn:hover {
+    background: var(--line-soft, #edeef2);
+    color: var(--ink, #12151c);
 }
 
 
