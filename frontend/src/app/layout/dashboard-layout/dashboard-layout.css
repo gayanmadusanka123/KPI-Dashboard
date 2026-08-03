@@ -1,0 +1,27 @@
+.dashboard-layout{
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+
+.main-content{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+main{
+
+    flex:1;
+
+    background:#f5f7fb;
+
+    overflow:auto;
+
+}
