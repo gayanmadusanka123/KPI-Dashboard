@@ -25,3 +25,23 @@ main{
     overflow:auto;
 
 }
+
+.content-area {
+
+    padding: 24px 32px;
+
+    box-sizing: border-box;
+
+    width: 100%;
+
+}
+
+@media (max-width: 768px) {
+
+    .content-area {
+
+        padding: 16px;
+
+    }
+
+}
