@@ -1,0 +1,528 @@
+<div class="summary-row">
+    <div class="summary-card">
+        <div class="summary-title">
+
+            Total KPIs
+
+        </div>
+
+        <div class="summary-value">
+
+            {{filteredKpis.length}}
+
+        </div>
+    </div>
+
+    <div class="summary-card">
+        <div class="summary-title">
+
+            On Track
+
+        </div>
+        <div class="summary-value good">
+
+            27
+
+            <span>64%</span>
+        </div>
+    </div>
+
+    <div class="summary-card">
+        <div class="summary-title">
+
+            At Risk
+
+        </div>
+        <div class="summary-value warn">
+
+            9
+
+        </div>
+    </div>
+
+    <div class="summary-card">
+        <div class="summary-title">
+
+            Off Track
+
+        </div>
+        <div class="summary-value bad">
+
+            6
+
+        </div>
+    </div>
+
+    <div class="summary-card">
+        <div class="summary-title">
+
+            Avg. Score
+
+        </div>
+        <div class="summary-value">
+
+            96.4
+
+            <span class="good">
+
+                +2.1%
+
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="toolbar">
+
+    <div class="search-box">
+
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+            <circle cx="11" cy="11" r="7"></circle>
+
+            <path d="m21 21-4.3-4.3"></path>
+
+        </svg>
+
+        <input type="text" placeholder="Search KPIs by name or ID..." [(ngModel)]="searchText" (input)="filterKpis()">
+
+    </div>
+
+    <div class="filters">
+
+        <select class="select" [(ngModel)]="selectedCategory" (change)="filterKpis()">
+
+            <option value="">All Categories</option>
+
+            <option>Financial</option>
+
+            <option>Customer</option>
+
+            <option>Operations</option>
+
+            <option>People</option>
+
+            <option>Growth</option>
+
+        </select>
+
+        <select class="select" [(ngModel)]="selectedDepartment" (change)="filterKpis()">
+
+            <option value="">All Departments</option>
+
+            <option>Sales</option>
+
+            <option>CX</option>
+
+            <option>People Ops</option>
+
+            <option>Manufacturing</option>
+
+            <option>Marketing</option>
+
+            <option>Logistics</option>
+
+        </select>
+
+        <select class="select" [(ngModel)]="selectedStatus" (change)="filterKpis()">
+
+            <option value="">All Statuses</option>
+
+            <option>Exceeded</option>
+
+            <option>On Track</option>
+
+            <option>At Risk</option>
+
+            <option>Off Track</option>
+
+        </select>
+
+    </div>
+
+    <div class="view-toggle">
+
+        <button class="view-toggle-btn" [class.active]="viewMode === 'table'" (click)="viewMode = 'table'">
+
+            <mat-icon>table_rows</mat-icon>
+
+            Table
+
+        </button>
+
+        <button class="view-toggle-btn" [class.active]="viewMode === 'cards'" (click)="viewMode = 'cards'">
+
+            <mat-icon>grid_view</mat-icon>
+
+            Cards
+
+        </button>
+
+    </div>
+
+</div>
+
+
+@if(viewMode === 'table'){
+<div class="table-view">
+    <table class="register">
+        <thead>
+            <tr>
+
+                <th (click)="sort('name')">
+                    KPI
+                </th>
+
+                <th (click)="sort('category')">
+                    Category
+                </th>
+
+                <th (click)="sort('owner')">
+                    Owner
+                </th>
+
+                <th (click)="sort('frequency')">
+                    Frequency
+                </th>
+
+                <th (click)="sort('target')">
+                    Target
+                </th>
+
+                <th (click)="sort('actual')">
+                    Actual
+                </th>
+
+                <th (click)="sort('score')">
+                    Score
+                </th>
+
+                <th (click)="sort('status')">
+                    Status
+                </th>
+
+                <th>
+                    Trend
+                </th>
+
+                <th (click)="sort('updated')">
+                    Updated
+                </th>
+
+                <th class="actions-column">
+                    Actions
+                </th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+            @for (kpi of filteredKpis; track kpi.id) {
+
+            <tr>
+
+                <td>
+
+                    <div class="kpi-name-cell">
+
+                        <div class="rail" [style.background]="
+                        kpi.status === 'Exceeded'
+                        ? 'var(--info)'
+                        : kpi.status === 'On Track'
+                        ? 'var(--good)'
+                        : kpi.status === 'At Risk'
+                        ? 'var(--warn)'
+                        : 'var(--bad)'">
+
+                        </div>
+
+                        <div>
+
+                            <div class="kpi-name">
+
+                                {{ kpi.name }}
+
+                            </div>
+
+                            <div class="kpi-id">
+
+                                {{ kpi.id }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </td>
+
+                <td class="cell-muted">
+
+                    {{ kpi.category }}
+
+                </td>
+
+                <td class="cell-muted">
+
+                    {{ kpi.owner }}
+
+                </td>
+
+                <td class="cell-muted">
+
+                    {{ kpi.frequency }}
+
+                </td>
+
+                <td class="mono">
+
+                    {{ kpi.target }}
+
+                </td>
+
+                <td class="mono">
+
+                    {{ kpi.actual }}
+
+                </td>
+
+                <td class="mono">
+
+                    {{ kpi.score }}
+
+                </td>
+
+                <td>
+
+                    <span class="badge" [ngClass]="{
+
+                    'badge-info': kpi.status === 'Exceeded',
+
+                    'badge-good': kpi.status === 'On Track',
+
+                    'badge-warn': kpi.status === 'At Risk',
+
+                    'badge-bad': kpi.status === 'Off Track'
+
+                    }">
+
+                        <span class="dot"></span>
+
+                        {{ kpi.status }}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <span class="trend" [ngClass]="{
+
+                    'up': kpi.trend === 'up',
+
+                    'down': kpi.trend === 'down',
+
+                    'flat': kpi.trend === 'flat'
+
+                    }">
+
+                        @if(kpi.trend==='up'){
+                        ▲ Improving
+                        }
+
+                        @if(kpi.trend==='down'){
+                        ▼ Declining
+                        }
+
+                        @if(kpi.trend==='flat'){
+                        ▬ Stable
+                        }
+
+                    </span>
+
+                </td>
+
+                <td class="cell-muted mono">
+
+                    {{ kpi.updated }}
+
+                </td>
+
+                <td class="actions-column">
+
+                    <button mat-icon-button [matMenuTriggerFor]="actionMenu"
+                        (click)="$event.stopPropagation(); selectedKpi = kpi">
+
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+
+                </td>
+
+            </tr>
+
+            }
+        </tbody>
+    </table>
+</div>
+}
+
+
+@if(viewMode === 'cards') {
+<div class="card-grid">
+
+    @for (kpi of filteredKpis; track kpi.id) {
+
+    <div class="kpi-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h3>{{ kpi.name }}</h3>
+
+                <small>{{ kpi.id }}</small>
+
+            </div>
+
+            <button mat-icon-button [matMenuTriggerFor]="actionMenu" (click)="selectedKpi = kpi">
+
+                <mat-icon>more_vert</mat-icon>
+
+            </button>
+
+        </div>
+
+        <div class="card-category">
+
+            <span>{{ kpi.category }}</span>
+
+        </div>
+
+        <div class="score-section">
+
+            <div class="score" [ngClass]="{
+                    'good': kpi.status === 'On Track' || kpi.status === 'Exceeded',
+                    'warn': kpi.status === 'At Risk',
+                    'bad': kpi.status === 'Off Track'
+                }">
+
+                {{ kpi.score }}
+
+            </div>
+
+            <small>Performance Score</small>
+
+        </div>
+
+        <div class="sparkline">
+
+            <svg viewBox="0 0 220 40">
+
+                <polyline points="0,30 35,26 70,20 105,22 140,15 175,10 220,6" fill="none" stroke="currentColor"
+                    stroke-width="3" />
+
+            </svg>
+
+        </div>
+
+        <div class="card-details">
+
+            <div>
+
+                <label>Target</label>
+
+                <strong>{{ kpi.target }}</strong>
+
+            </div>
+
+            <div>
+
+                <label>Actual</label>
+
+                <strong>{{ kpi.actual }}</strong>
+
+            </div>
+
+        </div>
+
+        <div class="card-footer">
+
+            <div>
+
+                <label>Owner</label>
+
+                <span>{{ kpi.owner }}</span>
+
+            </div>
+
+            <span class="status-badge" [ngClass]="{
+                    'badge-good': kpi.status === 'On Track',
+                    'badge-info': kpi.status === 'Exceeded',
+                    'badge-warn': kpi.status === 'At Risk',
+                    'badge-bad': kpi.status === 'Off Track'
+                }">
+
+                {{ kpi.status }}
+
+            </span>
+
+        </div>
+
+        <button class="details-btn" (click)="viewKpi(kpi)">
+
+            View Details
+
+        </button>
+
+    </div>
+
+    }
+
+</div>
+}
+
+
+
+<mat-menu #actionMenu="matMenu">
+
+    <button mat-menu-item (click)="viewKpi(selectedKpi!)">
+
+        <mat-icon>visibility</mat-icon>
+
+        <span>View Details</span>
+
+    </button>
+
+    <button mat-menu-item (click)="editKpi(selectedKpi!)">
+
+        <mat-icon>edit</mat-icon>
+
+        <span>Edit KPI</span>
+
+    </button>
+
+    <button mat-menu-item (click)="deleteKpi(selectedKpi!)">
+
+        <mat-icon>delete</mat-icon>
+
+        <span>Delete KPI</span>
+
+    </button>
+
+</mat-menu>
+
+@if(filteredKpis.length===0){
+
+<div class="empty-state">
+
+    <h3>No KPIs Found</h3>
+
+    <p>
+
+        No KPI matches your search criteria.
+
+    </p>
+
+</div>
+
+}
