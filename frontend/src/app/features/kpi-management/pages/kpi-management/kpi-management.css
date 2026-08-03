@@ -4,6 +4,7 @@
     justify-content:space-between;
     align-items:center;
 
+    margin-top:10px;
     margin-bottom:30px;
 
 }
@@ -29,9 +30,10 @@
 
     border:none;
 
+    margin-right:20px;
     padding:12px 22px;
 
-    border-radius:10px;
+    border-radius:30px;
 
     font-size:15px;
 
