@@ -1,3 +1,56 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+
+:root {
+
+    --ink: #12151C;
+    --canvas: #F3F4F7;
+    --surface: #FFFFFF;
+
+    --line: #E2E4EA;
+    --line-soft: #EDEEF2;
+
+    --muted: #6B7280;
+
+    --good: #1B8A5A;
+    --good-soft: #E6F5EE;
+
+    --warn: #B7791F;
+    --warn-soft: #FCF1DD;
+
+    --bad: #C13F3F;
+    --bad-soft: #FBE9E9;
+
+    --info: #3B6FD6;
+    --info-soft: #E9F0FD;
+
+}
+
+/* ===========================
+   Angular Material Menu Overrides
+=========================== */
+.mat-mdc-menu-panel {
+    background-color: #ffffff !important;
+    border: 1px solid var(--line, #e2e4ea) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+.mat-mdc-menu-item {
+    color: #1c2541 !important;
+    font-size: 13px !important;
+    font-family: inherit !important;
+}
+
+.mat-mdc-menu-item .mat-icon,
+.mat-mdc-menu-item mat-icon {
+    color: #6b7280 !important;
+    margin-right: 10px !important;
+}
+
+.mat-mdc-menu-item:hover {
+    background-color: #f3f4f7 !important;
+}
+
