@@ -1,11 +1,13 @@
 <div class="dashboard-layout">
 
-    <app-sidebar></app-sidebar>
+    <app-sidebar (collapsedChange)="collapsed = $event">    
+    </app-sidebar>
 
-    <div class="main-content">
+    <div class="main-content" [class.collapsed]="collapsed">
 
-        <app-header></app-header>
-        
+        <app-header [collapsed]="collapsed">
+        </app-header>
+
         <main>
             <div class="content-area">
                 <router-outlet></router-outlet>
