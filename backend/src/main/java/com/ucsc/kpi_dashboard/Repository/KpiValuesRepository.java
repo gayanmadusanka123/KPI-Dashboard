@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface KpiValuesRepository extends JpaRepository<KpiValues,Long>
 {
-    List<KpiValues> findByKpiProfilesIdOrderByValueDateDesc(Long id);
+    List<KpiValues> findByKpiProfileIdOrderByValueDateDesc(Long kpiProfileId);
 }

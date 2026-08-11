@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface KpiProfileRepository extends JpaRepository<KpiProfile,Long> {
-    KpiProfile findByType(KpiTypes type);
+    Optional<KpiProfile> findByKpiType(KpiTypes kpiTypes);
 
 }

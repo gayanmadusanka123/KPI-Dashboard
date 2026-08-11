@@ -1,0 +1,8 @@
+python:
+  executable: python3
+  calculator:
+    script:
+      path: /KPI-Dashboard/ml-service/synthetic/main.py
+    generator:
+      script:
+        path: /KPI-Dashboard/ml-service/synthetic/generator.py

@@ -11,7 +11,6 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Table(name = "kpi_profiles")
 public class KpiProfile {
 
@@ -39,7 +38,7 @@ public class KpiProfile {
     private double criticalThreshold;
 
     @Column(nullable = false)
-    private  double weight;
+    private double weight;
 
     @Column(nullable = false)
     private  Boolean higherBetter;
