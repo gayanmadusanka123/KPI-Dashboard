@@ -102,7 +102,19 @@ def generateRecords(numRecords):
         if random.random() < 0.08:
             anomaly_label[i] = injectAnomaly(data_dict, i)
 
+    data_dict = {
+            'Traffic': np.round(traffic, 2),
+            'Conversion': np.round(conversion, 3),
+            'No of Conversions': no_of_conversions,
+            'Revenue': revenue,
+            'Operational Cost': operational_cost,
+            'Head Count': head_count,
+            'Defect Rate': np.round(defect_rate, 2),
+            'On Time Delivery': np.round(on_time_delivery, 2),
+            'CSAT': np.round(csat, 2),
+            'Anomaly': anomaly_label
+    }
+
     return pd.DataFrame(data_dict)
 
 df = generateRecords(12) 
-print(df)
