@@ -7,6 +7,7 @@ import com.ucsc.kpi_dashboard.Model.KpiValues;
 import com.ucsc.kpi_dashboard.Repository.KpiProfileRepository;
 import com.ucsc.kpi_dashboard.Repository.KpiValuesRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import tools.jackson.core.type.TypeReference;
@@ -29,11 +30,11 @@ public class KpiGenerator {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
 
-    @Value("${python.executable:python3}")
+    @Value("${python.executable:python}")
     private String pythonExecutable;
 
-    @Value("${python.calculator.script.path}")
-    private String scriptPath;
+    @Value("${python.generator.script.path}")
+    private String generatorScriptPath;
 
     public KpiGenerator(KpiProfileRepository kpiProfileRepository, KpiValuesRepository kpiValuesRepository) {
         this.kpiProfileRepository = kpiProfileRepository;
@@ -42,12 +43,12 @@ public class KpiGenerator {
 
     @PostConstruct
     public void seedProfile() {
-        if (kpiProfileRepository.count() == 0) {
+        if (kpiProfileRepository.count() > 0) {
             return;
         }
 
         List<KpiProfile> kpiProfiles = List.of(
-                new KpiProfile(null, KpiTypes.MONTHLY_REVENUE, "Monthy Revenue", "USD", 250000.0, 20000.0, 15000.0, 1.20, true),
+                new KpiProfile(null, KpiTypes.MONTHLY_REVENUE, "Monthly Revenue", "USD", 250000.0, 20000.0, 15000.0, 1.20, true),
                 new KpiProfile(null, KpiTypes.CSAT_SCORE, "Csat Score", "%", 90, 80, 70, 1.00, true),
                 new KpiProfile(null, KpiTypes.HEAD_COUNT, "Head count", "Employees", 120, 100, 85, 0.70, true),
                 new KpiProfile(null, KpiTypes.DEFECT_RATE, "Defect Rate", "%", 2.0, 3.5, 5.0, 1.10, false),
@@ -61,6 +62,7 @@ public class KpiGenerator {
 
     }
 
+    @Transactional
     public int generateAndSave(int months) {
         try {
             String json = runPython(months);
@@ -90,7 +92,7 @@ public class KpiGenerator {
                 addValue(toSave, defectRate, getDouble(row, "Defect Rate") * 100.0, data);
                 addValue(toSave, headcount, getDouble(row, "Head Count"), data);
                 addValue(toSave, revenue, getDouble(row, "Revenue"), data);
-                addValue(toSave, csat, getDouble(row, "Csat"), data);
+                addValue(toSave, csat, getDouble(row, "CSAT") * 100.0, data);
                 addValue(toSave, onTimeDelivery, getDouble(row, "On Time Delivery"), data);
 
             }
@@ -124,7 +126,7 @@ public class KpiGenerator {
 
     private String runPython(int months) throws Exception {
         ProcessBuilder processBuilder = new ProcessBuilder(
-                pythonExecutable, scriptPath,
+                pythonExecutable, generatorScriptPath,
                 String.valueOf(months)
         );
         processBuilder.redirectErrorStream(true);
@@ -144,7 +146,7 @@ public class KpiGenerator {
             throw new RuntimeException("Python exited with code " + exit + ": " + output);
         }
 
-        return output.toString();
+        return output.toString().trim();
     }
 
 }

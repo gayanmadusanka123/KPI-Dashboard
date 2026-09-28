@@ -64,10 +64,15 @@ public class KpiController {
     }
 
     @PostMapping("/generate")
-    public String generate(@RequestHeader(defaultValue = "12") int month) {
-        int inserted = kpiGenerator.generateAndSave(month);
+    public ResponseEntity<Integer> generate(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(defaultValue = "12") int months
+    ) throws UserException {
+        userService.getUserByJwtToken(token);
 
-        return String.valueOf(inserted);
+        int inserted = kpiGenerator.generateAndSave(months);
+
+        return ResponseEntity.ok(inserted);
     }
 
 }

@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import random
+import sys
 
 def injectAnomaly(data, month):
 
@@ -104,5 +105,9 @@ def generateRecords(numRecords):
 
     return pd.DataFrame(data_dict)
 
-df = generateRecords(12) 
-print(df)
+if __name__ == "__main__":
+    months = int(sys.argv[1] if len(sys.argv) > 1 else 12)
+
+    df = generateRecords(months)
+
+    print(df.to_json(orient='records'))

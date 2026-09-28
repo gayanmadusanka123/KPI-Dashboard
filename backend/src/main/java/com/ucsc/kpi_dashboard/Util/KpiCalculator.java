@@ -15,10 +15,10 @@ import java.util.Map;
 public class KpiCalculator {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    @Value("${python.executable:python3}")
+    @Value("${python.executable:python}")
     private String pythonExecutable;
     @Value("${python.calculator.script.path}")
-    private String scriptPath;
+    private String calculatorScriptPath;
 
     public CalculationResult calculationResult(KpiProfile kpiProfile,double actualValue){
         try{
@@ -28,12 +28,12 @@ public class KpiCalculator {
             payload.put("warningThreshold",kpiProfile.getWarningThreshold());
             payload.put("criticalThreshold",kpiProfile.getCriticalThreshold());
             payload.put("weight",kpiProfile.getWeight());
-            //payload.put("higherBetter",kpiProfile.getHigherBetter());
+            payload.put("higherBetter",kpiProfile.getHigherBetter());
             payload.put("actualValue",actualValue);
 
             String inputJson = objectMapper.writeValueAsString(payload);
 
-            ProcessBuilder processBuilder = new ProcessBuilder(pythonExecutable,scriptPath,inputJson);
+            ProcessBuilder processBuilder = new ProcessBuilder(pythonExecutable,calculatorScriptPath,inputJson);
 
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
