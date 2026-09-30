@@ -1,0 +1,12 @@
+<div class="model-grid">
+  @for (m of models; track m.name) {
+    <article class="model-card">
+      <div class="model-head">
+        <div><p class="model-name">{{m.name}}</p><p class="model-meta">{{m.version}} · trained {{m.trained}}</p></div>
+        <span class="active"><span class="pulse"></span>active</span>
+      </div>
+      <div class="accuracy-row"><span>Accuracy</span><strong [style.color]="m.color">{{m.accuracy}}%</strong></div>
+      <app-ai-progress [value]="m.accuracy" [color]="m.color" [height]="5" />
+    </article>
+  }
+</div>
