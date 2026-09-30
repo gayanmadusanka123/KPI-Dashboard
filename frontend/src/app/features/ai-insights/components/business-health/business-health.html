@@ -1,0 +1,5 @@
+<section class="health-card">
+  <p class="title">Business Health</p>
+  <div class="gauge-wrap"><app-ai-gauge-ring [value]="87" [size]="110" [stroke]="9" [color]="C.ai"/><div class="gauge-label"><strong>87</strong><span>/100</span></div></div>
+  @for(h of health; track h.label){<div class="health-row"><span>{{h.label}}</span><strong [style.color]="h.color">{{h.val}}</strong></div>}
+</section>

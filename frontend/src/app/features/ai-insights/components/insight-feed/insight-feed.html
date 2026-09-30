@@ -1,0 +1,16 @@
+<section class="feed">
+  <div class="feed-header">
+    <p>Insight Feed</p>
+    <div class="filters">@for(f of filters; track f){<button type="button">{{f}}</button>}</div>
+  </div>
+  @for(ins of insights; track ins.title; let i=$index){
+    <article class="insight-card" [class.active]="activeSignal()===i" [style.--accent]="ins.color" (click)="activeSignal.set(i)">
+      <div class="icon-box"><app-ai-icon [name]="ins.icon" [size]="18" [color]="ins.color"/></div>
+      <div class="insight-main">
+        <div class="insight-title-row"><p>{{ins.title}}</p><div class="badges"><app-ai-badge [variant]="typeV[ins.type]">{{ins.type}}</app-ai-badge><app-ai-badge [variant]="impactV[ins.impact]">{{ins.impact}}</app-ai-badge></div></div>
+        <p class="body">{{ins.body}}</p>
+        <div class="insight-meta"><span>Confidence</span><div class="confidence"><span [style.width.%]="ins.confidence" [style.backgroundColor]="ins.color"></span></div><strong [style.color]="ins.color">{{ins.confidence}}%</strong><time>{{ins.time}}</time></div>
+      </div>
+    </article>
+  }
+</section>
