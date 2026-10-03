@@ -7,6 +7,7 @@ synthetic_folder_path = os.path.join(current_dir, "synthetic")
 preprocessing_folder_path = os.path.join(current_dir, "app", "core")
 modelselector_folder_path = os.path.join(current_dir, "app", "core")
 linearregression_folder_path = os.path.join(current_dir, "app", "core", "models")
+exponentialsmoothing_folder_path = os.path.join(current_dir, "app", "core", "models")
 
 if preprocessing_folder_path not in sys.path:
     sys.path.append(preprocessing_folder_path)
@@ -17,12 +18,16 @@ if modelselector_folder_path not in sys.path:
 if linearregression_folder_path not in sys.path:
     sys.path.append(linearregression_folder_path)
 
+if exponentialsmoothing_folder_path not in sys.path:
+    sys.path.append(exponentialsmoothing_folder_path)
+
 sys.path.append(synthetic_folder_path)
 
 from synthetic_generator import generateRecords
 from preprocessing import clean_time_series, normalize_data, calculate_performance_score
 from model_selector import select_model, select_models_per_kpi
 from linear_regression import forecast_linear_regression
+from exponential_smoothing import forecast_exponential_smoothing
 
 SYNTHETIC_KPI_COLUMNS = [
     'Traffic',
@@ -36,7 +41,7 @@ SYNTHETIC_KPI_COLUMNS = [
     'CSAT'
 ]
 
-no_of_months = 8
+no_of_months = 24
 df = generateRecords(no_of_months)
 df['date'] = pd.date_range(start='2025-01-01', periods=no_of_months, freq='MS')
 
@@ -92,4 +97,16 @@ revenue_forecast = forecast_linear_regression(
     kpi_name = 'Revenue',
     periods = 3
 )
+print(revenue_forecast)
+
+revenue_forecast = forecast_exponential_smoothing(
+    cleaned_df['Revenue'],
+    kpi_name = 'Revenue',
+    periods = 3,
+    trend='add',
+    seasonal=None,
+    seasonal_periods=12,
+    damped_trend=True
+)
+print("\nETS - Multiplicative Seasonality: ")
 print(revenue_forecast)
