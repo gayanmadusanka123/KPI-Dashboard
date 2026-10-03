@@ -8,6 +8,7 @@ preprocessing_folder_path = os.path.join(current_dir, "app", "core")
 modelselector_folder_path = os.path.join(current_dir, "app", "core")
 linearregression_folder_path = os.path.join(current_dir, "app", "core", "models")
 exponentialsmoothing_folder_path = os.path.join(current_dir, "app", "core", "models")
+sarima_folder_path = os.path.join(current_dir, "app", "core", "models")
 
 if preprocessing_folder_path not in sys.path:
     sys.path.append(preprocessing_folder_path)
@@ -21,6 +22,9 @@ if linearregression_folder_path not in sys.path:
 if exponentialsmoothing_folder_path not in sys.path:
     sys.path.append(exponentialsmoothing_folder_path)
 
+if sarima_folder_path not in sys.path:
+    sys.path.append(sarima_folder_path)
+
 sys.path.append(synthetic_folder_path)
 
 from synthetic_generator import generateRecords
@@ -28,6 +32,8 @@ from preprocessing import clean_time_series, normalize_data, calculate_performan
 from model_selector import select_model, select_models_per_kpi
 from linear_regression import forecast_linear_regression
 from exponential_smoothing import forecast_exponential_smoothing
+from sarima import generate_parameter_grid
+from models.sarima import find_best_sarima_model, forecast_sarima
 
 SYNTHETIC_KPI_COLUMNS = [
     'Traffic',
@@ -110,3 +116,28 @@ revenue_forecast = forecast_exponential_smoothing(
 )
 print("\nETS - Multiplicative Seasonality: ")
 print(revenue_forecast)
+
+pdq, seasonal_pdq = generate_parameter_grid()
+print("\n\nNon-seasonal combinations: ", len(pdq))
+print("Seasonal combinations: ", len(seasonal_pdq))
+
+best_model, best_order, best_seasonal_order, best_aic = (
+    find_best_sarima_model(
+        cleaned_df['Revenue'].dropna()
+    )
+)
+
+print("\nBest SARIMA model: ")
+print("Order: ", best_order)
+print("Seasonal order: ", best_seasonal_order)
+print("AIC: ", best_aic)
+
+sarima_forecast = forecast_sarima(
+    cleaned_df["Revenue"].dropna(),
+    "Revenue",
+    periods=3
+)
+
+print("\nSARIMA Forecast")
+print(sarima_forecast)
+
