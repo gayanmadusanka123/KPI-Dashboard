@@ -34,6 +34,9 @@ from linear_regression import forecast_linear_regression
 from exponential_smoothing import forecast_exponential_smoothing
 from sarima import generate_parameter_grid
 from models.sarima import find_best_sarima_model, forecast_sarima
+from models.prophet import forecast_prophet
+
+from app.core.forecasting import forecast_all_kpis
 
 SYNTHETIC_KPI_COLUMNS = [
     'Traffic',
@@ -47,7 +50,7 @@ SYNTHETIC_KPI_COLUMNS = [
     'CSAT'
 ]
 
-no_of_months = 24
+no_of_months = 100
 df = generateRecords(no_of_months)
 df['date'] = pd.date_range(start='2025-01-01', periods=no_of_months, freq='MS')
 
@@ -75,6 +78,7 @@ print(normalize_df)
 print("\nPerformance Score")
 print(performance_df[['Performance Score']])
 
+"""
 print("\nModel selection Tests")
 for points in [4, 8, 12, 18, 24, 36, 48, 60]:
     result = select_model(points)
@@ -96,7 +100,8 @@ for kpi, result in selections.items():
         f"{result['model']}"
     )
 
-print("\nRevenue Forecast")
+    
+print("\nRevenue Forecast - Linear Regression")
 
 revenue_forecast = forecast_linear_regression(
     cleaned_df['Revenue'],
@@ -141,3 +146,39 @@ sarima_forecast = forecast_sarima(
 print("\nSARIMA Forecast")
 print(sarima_forecast)
 
+
+print("\nProphet Forecast")
+
+prophet_forecast = forecast_prophet(
+    cleaned_df["Revenue"].dropna(),
+    "Revenue",
+    periods=3
+)
+
+print(prophet_forecast)
+
+selections = select_models_per_kpi(
+    cleaned_df,
+    SYNTHETIC_KPI_COLUMNS
+)
+
+print(selections)
+"""
+
+selections = select_models_per_kpi(
+    cleaned_df,
+    SYNTHETIC_KPI_COLUMNS
+)
+
+print("\nMODEL SELECTIONS:")
+
+for kpi, result in selections.items():
+    print(
+        kpi,
+        "->",
+        result["data_points"],
+        "points ->",
+        result["model"]
+    )
+forecasts = forecast_all_kpis(cleaned_df, SYNTHETIC_KPI_COLUMNS, periods=3)
+print("\n\n", forecasts)

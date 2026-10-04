@@ -34,7 +34,7 @@ def select_models_per_kpi(df, kpi_columns):
     selections = {}
 
     for kpi in kpi_columns:
-        series = df[kpi].dropna()
+        series = df[kpi].dropna() #calculating the no of data points
         data_points = len(series)
 
         selections[kpi] = {
