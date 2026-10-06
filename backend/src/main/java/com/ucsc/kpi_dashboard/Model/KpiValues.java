@@ -19,7 +19,7 @@ public class KpiValues {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "kpi_profiles_id", nullable = false)
+    @JoinColumn(name = "kpi_profile_id", nullable = false)
     private KpiProfile kpiProfile;
 
     @Column(nullable = false)

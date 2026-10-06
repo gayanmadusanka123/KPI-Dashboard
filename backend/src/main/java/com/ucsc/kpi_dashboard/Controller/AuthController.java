@@ -26,4 +26,6 @@ public class AuthController {
     public ResponseEntity<AuthResponse> Login(@RequestBody UserDto userDto) throws UserException {
         return ResponseEntity.ok(authService.Login(userDto));
     }
+
+
 }
