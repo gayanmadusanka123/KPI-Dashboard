@@ -111,3 +111,4 @@ if __name__ == "__main__":
     df = generateRecords(months)
 
     print(df.to_json(orient='records'))
+    print(df)
