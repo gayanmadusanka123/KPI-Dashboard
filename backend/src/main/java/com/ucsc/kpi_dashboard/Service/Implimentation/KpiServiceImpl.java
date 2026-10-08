@@ -12,15 +12,11 @@ import com.ucsc.kpi_dashboard.Repository.KpiProfileRepository;
 import com.ucsc.kpi_dashboard.Repository.KpiValuesRepository;
 import com.ucsc.kpi_dashboard.Service.KPIService;
 import com.ucsc.kpi_dashboard.Util.KpiCalculator;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.DialectOverride;
-import org.hibernate.service.UnknownServiceException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +35,7 @@ public class KpiServiceImpl implements KPIService {
     @Override
     public KpiProfileDto getKpiProfileByType(KpiTypes kpiTypes) throws UserException {
         KpiProfile kpiProfile = kpiProfileRepository.findByKpiType(kpiTypes).orElseThrow(
-                ()-> new UserException("Missing KPI profile :" + kpiTypes)
+                () -> new UserException("Missing KPI profile :" + kpiTypes)
         );
         return KpiProfileMapper.toDto(kpiProfile);
     }
@@ -58,9 +54,9 @@ public class KpiServiceImpl implements KPIService {
 
         KpiValues savedValue = kpiValuesRepository.save(kpiValues);
 
-        KpiCalculator.CalculationResult result = kpiCalculator.calculationResult(kpiProfile,actualValue);
+        KpiCalculator.CalculationResult result = kpiCalculator.calculationResult(kpiProfile, actualValue);
 
-        return KpiValueMapper.toDto(savedValue,result.status(), result.normalizedScore());
+        return KpiValueMapper.toDto(savedValue, result.status(), result.normalizedScore());
 
     }
 
@@ -73,9 +69,9 @@ public class KpiServiceImpl implements KPIService {
 
         return kpiValuesRepository.findByKpiProfileIdOrderByValueDateDesc(kpiProfile.getId()).stream().map(
                 kpiValues -> {
-                    KpiCalculator.CalculationResult calculationResult = kpiCalculator.calculationResult(kpiProfile,kpiValues.getActualValue());
+                    KpiCalculator.CalculationResult calculationResult = kpiCalculator.calculationResult(kpiProfile, kpiValues.getActualValue());
 
-                    return KpiValueMapper.toDto(kpiValues, calculationResult.status(),  calculationResult.normalizedScore());
+                    return KpiValueMapper.toDto(kpiValues, calculationResult.status(), calculationResult.normalizedScore());
                 }
         ).toList();
     }
