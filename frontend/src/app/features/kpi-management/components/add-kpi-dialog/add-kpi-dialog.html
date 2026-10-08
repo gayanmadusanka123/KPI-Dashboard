@@ -1,112 +1,194 @@
-<div class="overlay">
-    <div class="dialog">
-        <div class="dialog-header">
-            <h2>Add New KPI</h2>
+<form [formGroup]="kpiForm" (ngSubmit)="onSubmit()">
 
-            <button class="close-btn" (click)="closeDialog()">
-                ✕
-            </button>
+    <div class="dialog-header">
+        <h2>Add New KPI</h2>
+
+        <button type="button" class="close-btn" (click)="closeDialog()">
+            ✕
+        </button>
+    </div>
+
+    <div class="dialog-body">
+        <div class="form-group">
+            <label for="kpiName">KPI Name </label>
+
+            <input id="kpiName" type="text" placeholder="Enter KPI name" formControlName="kpiName">
+
+            @if (submitted &&
+            kpiForm.controls.kpiName.hasError('required')) {
+
+            <small class="error">
+                KPI Name is required.
+            </small>
+            }
+
+            @if (submitted &&
+            kpiForm.controls.kpiName.hasError('minlength')) {
+
+            <small class="error">
+                Minimum 3 characters required.
+            </small>
+            }
+
+            @if (submitted &&
+            kpiForm.controls.kpiName.hasError('maxlength')) {
+
+            <small class="error">
+                Maximum 100 characters allowed.
+            </small>
+            }
         </div>
 
-        <div class="dialog-body">
-            <div class="form-group">
-                <label>KPI Name *</label>
+        <div class="form-group">
+            <label for="description">Description</label>
 
-                <input
-                    type="text"
-                    placeholder="Enter KPI name">
-            </div>
+            <textarea id="description" rows="3" placeholder="Enter description" formControlName="description">
+                </textarea>
 
-            <div class="form-group">
-                <label>Description</label>
+            @if (submitted &&
+                kpiForm.controls.description.hasError('maxlength')) {
 
-                <textarea
-                    rows="3"
-                    placeholder="Enter description"></textarea>
-            </div>
-
-            <div class="grid">
-                <div class="form-group">
-                    <label>Category</label>
-
-                    <select>
-                        <option>Financial</option>
-                        <option>Customer</option>
-                        <option>Operations</option>
-                        <option>HR</option>
-                    </select>
-
-                </div>
-
-                <div class="form-group">
-                    <label>Department</label>
-
-                    <select>
-                        <option>Finance</option>
-                        <option>Sales</option>
-                        <option>Marketing</option>
-                        <option>IT</option>
-
-                    </select>
-
-                </div>
-
-                <div class="form-group">
-                    <label>Measurement Unit</label>
-
-                    <select>
-                        <option>Percentage (%)</option>
-                        <option>Currency (£)</option>
-                        <option>Number</option>
-
-                    </select>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>Reporting Frequency</label>
-
-                    <select>
-                        <option>Monthly</option>
-                        <option>Quarterly</option>
-                        <option>Yearly</option>
-                    </select>
-
-                </div>
-
-                <div class="form-group">
-                    <label>Direction</label>
-
-                    <select>
-                        <option>Higher is Better</option>
-                        <option>Lower is Better</option>
-                    </select>
-
-                </div>
-
-                <div class="form-group">
-                    <label>Status</label>
-
-                    <select>
-                        <option>Active</option>
-                        <option>Inactive</option>
-                    </select>
-
-                </div>
-            </div>
+                <small class="error">
+                    Maximum 500 characters allowed.
+                </small>
+            }
         </div>
 
-        <div class="dialog-footer">
+        <div class="grid">
+            <div class="form-group">
+                <label>Category</label>
 
-            <button class="cancel-btn" (click)="closeDialog()">
-                Cancel
-            </button>
+                <select formControlName="category">
+                    
+                    <option value="Financial">Financial</option>
+                    <option value="Customer">Customer</option>
+                    <option value="Operations">Operations</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Human Resources">Human Resources</option>
+                </select>
 
-            <button class="save-btn">
-                Save KPI
-            </button>
+                @if (submitted &&
+                    kpiForm.controls.category.hasError('required')) {
 
+                    <small class="error">
+                        Category is required.
+                    </small>
+                }
+            </div>
+
+            <div class="form-group">
+                <label>Department</label>
+
+                <select formControlName="department">
+                    
+                    <option value="Finance">Finance</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="HR">HR</option>
+                    <option value="Operations">Operations</option>
+                    <option value="IT">IT</option>
+                </select>
+
+                @if (submitted &&
+                kpiForm.controls.department.hasError('required')) {
+
+                <small class="error">
+                    Department is required.
+                </small>
+
+                }
+            </div>
+
+            <div class="form-group">
+                <label>Measurement Unit</label>
+
+                <select formControlName="measurementUnit">
+                    
+                    <option value="Percentage">Percentage (%)</option>
+                    <option value="Currency">Currency ($)</option>
+                    <option value="Number">Number</option>
+                    <option value="Hours">Hours</option>
+                    <option value="Days">Days</option>
+                </select>
+
+                @if (submitted &&
+                kpiForm.controls.measurementUnit.hasError('required')) {
+
+                <small class="error">
+                    Measurement Unit is required.
+                </small>
+
+                }
+            </div>
+
+            <div class="form-group">
+
+                <label>Reporting Frequency</label>
+
+                <select formControlName="reportingFrequency">
+                    
+                    <option value="Weekly">Weekly</option>
+                    <option value="Monthly">Monthly</option>
+                    <option value="Quarterly">Quarterly</option>
+                    <option value="Yearly">Yearly</option>
+                </select>
+
+                @if (submitted &&
+                kpiForm.controls.reportingFrequency.hasError('required')) {
+
+                <small class="error">
+                    Reporting Frequency is required.
+                </small>
+
+                }
+            </div>
+
+            <div class="form-group">
+                <label>Direction</label>
+
+                <select formControlName="direction">
+                    <option value="" disabled>Select Direction</option>
+                    <option value="Higher">Higher is Better</option>
+                    <option value="Lower">Lower is Better</option>
+                    <option value="Range">Target Range</option>
+                </select>
+
+                @if (submitted &&
+                kpiForm.controls.direction.hasError('required')) {
+
+                <small class="error">
+                    Direction is required.
+                </small>
+
+                }
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+
+                <select formControlName="status">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+
+            </div>
         </div>
     </div>
-</div>
+
+    <div class="dialog-footer">
+
+        <button type="button" class="cancel-btn" (click)="closeDialog()">
+
+            Cancel
+
+        </button>
+
+        <button type="submit" class="save-btn" >
+
+            Save KPI
+
+        </button>
+
+    </div>
+</form>

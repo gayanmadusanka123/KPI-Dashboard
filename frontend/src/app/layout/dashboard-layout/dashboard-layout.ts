@@ -15,4 +15,10 @@ import { Footer } from '../footer/footer';
   templateUrl: './dashboard-layout.html',
   styleUrl: './dashboard-layout.css',
 })
-export class DashboardLayout {}
+export class DashboardLayout {
+  collapsed = false;
+
+  toggleSidebar() {
+    this.collapsed = !this.collapsed;
+  }
+}
