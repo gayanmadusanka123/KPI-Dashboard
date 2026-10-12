@@ -1,12 +1,17 @@
 <div class = "page-header">
     
     <div>
-        <h1>KPI Management </h1>
-        <p>Create, monitor and manage organisational KPIs.</p>
+        <h2>KPI Management </h2>
+        <p>Track, compare, and manage all key performance indicators</p>
     </div>
 
     <button class="add-btn" (click)="openAddKpiDialog()">
         + Add New KPI
     </button>
 </div>
+
+<app-kpi-table
+    [kpis]="kpis">
+</app-kpi-table>
+
 

@@ -49,7 +49,7 @@
     display:grid;
 
     grid-template-columns:1fr 1fr;
-
+    
     gap:20px;
 
 }
@@ -143,3 +143,19 @@ textarea{
     cursor:pointer;
 
 }
+
+.error {
+    color: #dc2626;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+
+
+.save-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+
