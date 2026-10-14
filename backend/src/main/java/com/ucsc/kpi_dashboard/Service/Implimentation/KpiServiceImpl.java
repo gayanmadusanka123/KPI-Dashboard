@@ -1,82 +1,167 @@
 package com.ucsc.kpi_dashboard.Service.Implimentation;
 
-import com.ucsc.kpi_dashboard.Domain.KpiTypes;
-import com.ucsc.kpi_dashboard.Exeptions.UserException;
-import com.ucsc.kpi_dashboard.Mapper.KpiProfileMapper;
-import com.ucsc.kpi_dashboard.Mapper.KpiValueMapper;
-import com.ucsc.kpi_dashboard.Model.KpiProfile;
-import com.ucsc.kpi_dashboard.Model.KpiValues;
-import com.ucsc.kpi_dashboard.Payload.Dto.KpiProfileDto;
-import com.ucsc.kpi_dashboard.Payload.Dto.KpiValueDto;
-import com.ucsc.kpi_dashboard.Repository.KpiProfileRepository;
-import com.ucsc.kpi_dashboard.Repository.KpiValuesRepository;
-import com.ucsc.kpi_dashboard.Service.KPIService;
-import com.ucsc.kpi_dashboard.Util.KpiCalculator;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.DialectOverride;
-import org.hibernate.service.UnknownServiceException;
-import org.springframework.stereotype.Service;
+import com.ucsc.kpi_dashboard.Mapper.KpiMapper;
+import com.ucsc.kpi_dashboard.Model.Department;
+import com.ucsc.kpi_dashboard.Model.Kpi;
+import com.ucsc.kpi_dashboard.Model.KpiCategory;
+import com.ucsc.kpi_dashboard.Model.User;
+import com.ucsc.kpi_dashboard.Payload.Dto.KpiDto;
+import com.ucsc.kpi_dashboard.Payload.Dto.KpiRequestDto;
+import com.ucsc.kpi_dashboard.Repository.DepartmentRepository;
+import com.ucsc.kpi_dashboard.Repository.KpiCategoryRepository;
+import com.ucsc.kpi_dashboard.Repository.KpiRepository;
+import com.ucsc.kpi_dashboard.Repository.UserRepository;
+import com.ucsc.kpi_dashboard.Service.KpiService;
+import com.ucsc.kpi_dashboard.Exeptions.ResourceNotFoundException;
 
-import java.time.LocalDate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
-public class KpiServiceImpl implements KPIService {
+@Transactional
+public class KpiServiceImpl implements KpiService {
 
-    private final KpiProfileRepository kpiProfileRepository;
-    private final KpiValuesRepository kpiValuesRepository;
-    private final KpiCalculator kpiCalculator;
+    private final KpiRepository kpiRepository;
+    private final KpiCategoryRepository kpiCategoryRepository;
+    private final DepartmentRepository departmentRepository;
+    private final UserRepository userRepository;
 
-    @Override
-    public List<KpiProfileDto> getAllKpiProfiles() {
-
-        return kpiProfileRepository.findAll().stream().map(KpiProfileMapper::toDto).toList();
+    public KpiServiceImpl(
+            KpiRepository kpiRepository,
+            KpiCategoryRepository kpiCategoryRepository,
+            DepartmentRepository departmentRepository,
+            UserRepository userRepository
+    ) {
+        this.kpiRepository = kpiRepository;
+        this.kpiCategoryRepository = kpiCategoryRepository;
+        this.departmentRepository = departmentRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public KpiProfileDto getKpiProfileByType(KpiTypes kpiTypes) throws UserException {
-        KpiProfile kpiProfile = kpiProfileRepository.findByKpiType(kpiTypes).orElseThrow(
-                ()-> new UserException("Missing KPI profile :" + kpiTypes)
-        );
-        return KpiProfileMapper.toDto(kpiProfile);
+    public KpiDto createKpi(KpiRequestDto requestDto) {
+
+        Kpi kpi = new Kpi();
+
+        kpi.setKpiCode(generateKpiCode());
+        kpi.setName(requestDto.getName());
+        kpi.setDescription(requestDto.getDescription());
+        kpi.setCategory(resolveCategory(requestDto.getCategoryId()));
+        kpi.setDepartment(resolveDepartment(requestDto.getDepartmentId()));
+        kpi.setOwner(resolveOwner(requestDto.getOwnerId()));
+        kpi.setDataSource(requestDto.getDataSource());
+        kpi.setMeasurementUnit(requestDto.getMeasurementUnit());
+        kpi.setReportingFrequency(requestDto.getReportingFrequency());
+        kpi.setDirectionOfGood(requestDto.getDirectionOfGood());
+        kpi.setStatus(requestDto.getStatus());
+        kpi.setNotes(requestDto.getNotes());
+        kpi.setCreatedAt(LocalDateTime.now());
+
+        Kpi savedKpi = kpiRepository.save(kpi);
+
+        return KpiMapper.toDto(savedKpi);
     }
 
-
     @Override
-    public KpiValueDto saveKpiValue(KpiTypes kpiTypes, double actualValue, LocalDate date) throws UserException {
+    @Transactional(readOnly = true)
+    public List<KpiDto> getAllKpis() {
 
-        KpiProfile kpiProfile = kpiProfileRepository.findByKpiType(kpiTypes).orElseThrow(
-                () -> new UserException("Missing kpi type : " + kpiTypes)
-        );
-        KpiValues kpiValues = new KpiValues();
-        kpiValues.setActualValue(actualValue);
-        kpiValues.setKpiProfile(kpiProfile);
-        kpiValues.setValueDate(date);
-
-        KpiValues savedValue = kpiValuesRepository.save(kpiValues);
-
-        KpiCalculator.CalculationResult result = kpiCalculator.calculationResult(kpiProfile,actualValue);
-
-        return KpiValueMapper.toDto(savedValue,result.status(), result.normalizedScore());
-
+        return kpiRepository.findAll()
+                .stream()
+                .map(KpiMapper::toDto)
+                .toList();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public KpiDto getKpiById(UUID id) {
+
+        Kpi kpi = kpiRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "KPI not found with id: " + id
+                ));
+
+        return KpiMapper.toDto(kpi);
+    }
 
     @Override
-    public List<KpiValueDto> getValueByType(KpiTypes kpiTypes) throws UserException {
-        KpiProfile kpiProfile = kpiProfileRepository.findByKpiType(kpiTypes).orElseThrow(
-                () -> new UserException("Missing KPI type :" + kpiTypes)
-        );
+    public KpiDto updateKpi(UUID id, KpiRequestDto requestDto) {
 
-        return kpiValuesRepository.findByKpiProfileIdOrderByValueDateDesc(kpiProfile.getId()).stream().map(
-                kpiValues -> {
-                    KpiCalculator.CalculationResult calculationResult = kpiCalculator.calculationResult(kpiProfile,kpiValues.getActualValue());
+        Kpi kpi = kpiRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "KPI not found with id: " + id
+                ));
 
-                    return KpiValueMapper.toDto(kpiValues, calculationResult.status(),  calculationResult.normalizedScore());
-                }
-        ).toList();
+        kpi.setName(requestDto.getName());
+        kpi.setDescription(requestDto.getDescription());
+        kpi.setCategory(resolveCategory(requestDto.getCategoryId()));
+        kpi.setDepartment(resolveDepartment(requestDto.getDepartmentId()));
+        kpi.setOwner(resolveOwner(requestDto.getOwnerId()));
+        kpi.setDataSource(requestDto.getDataSource());
+        kpi.setMeasurementUnit(requestDto.getMeasurementUnit());
+        kpi.setReportingFrequency(requestDto.getReportingFrequency());
+        kpi.setDirectionOfGood(requestDto.getDirectionOfGood());
+        kpi.setStatus(requestDto.getStatus());
+        kpi.setNotes(requestDto.getNotes());
+        kpi.setUpdatedAt(LocalDateTime.now());
+
+        Kpi updatedKpi = kpiRepository.save(kpi);
+
+        return KpiMapper.toDto(updatedKpi);
+    }
+
+    @Override
+    public void deleteKpi(UUID id) {
+
+        Kpi kpi = kpiRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "KPI not found with id: " + id
+                ));
+
+        kpiRepository.delete(kpi);
+    }
+
+    private String generateKpiCode() {
+        return "KPI-" + UUID.randomUUID()
+                .toString()
+                .substring(0, 8)
+                .toUpperCase();
+    }
+
+    private KpiCategory resolveCategory(UUID categoryId) {
+        if (categoryId == null) {
+            return null;
+        }
+
+        return kpiCategoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "KPI Category not found with id: " + categoryId
+                ));
+    }
+
+    private Department resolveDepartment(UUID departmentId) {
+        if (departmentId == null) {
+            return null;
+        }
+
+        return departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Department not found with id: " + departmentId
+                ));
+    }
+
+    private User resolveOwner(UUID ownerId) {
+        if (ownerId == null) {
+            return null;
+        }
+
+        return userRepository.findById(ownerId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User not found with id: " + ownerId
+                ));
     }
 }
