@@ -1,62 +1,124 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-add-kpi-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ ReactiveFormsModule, CommonModule ],
   templateUrl: './add-kpi-dialog.html',
   styleUrl: './add-kpi-dialog.css',
 })
-export class AddKpiDialog {
+export class AddKpiDialog implements OnInit {
 
-  private fb = inject(FormBuilder);
-  
-
-  constructor(private dialogRef: MatDialogRef<AddKpiDialog>) {}
-
-  kpiForm = this.fb.group({
-
-    kpiName: ['',
-      [
-        Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(100)
-      ] 
-    ],
-
-    description: ['', Validators.maxLength(500)],
-
-    category: ['', Validators.required],
-
-    department: ['', Validators.required],
-
-    measurementUnit: ['', Validators.required],
-
-    reportingFrequency: ['', Validators.required],
-
-    direction: ['', Validators.required],
-
-    status: ['Active', Validators.required]
-
-  });
-
+  kpiForm!: FormGroup;
   submitted = false;
+  currentStep = 1;
 
-  onSubmit() {
+  constructor(
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<AddKpiDialog>
+  ) {}
+
+  ngOnInit(): void {
+
+    this.kpiForm = this.fb.group({
+
+      // step1
+      kpiName: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(100)
+        ]
+      ],
+
+      category: ['', Validators.required],
+
+      department: ['', Validators.required],
+
+      owner: ['', Validators.required],
+
+      // Optional fields
+      description: [
+        '',
+        [
+          Validators.maxLength(500)
+        ]
+      ],
+
+      dataSource: [''],
+
+      measurementUnit: ['',Validators.required],
+
+      reportingFrequency: ['', Validators.required],
+
+      directionOfGood: ['Higher is Better'],
+
+      tags: [''],
+
+      status: ['Active'],
+
+      notes: [''],
+
+      //step2
+
+      period: [''],
+
+      targetValue: ['', Validators.required],
+
+      actualValue: [''],
+
+      dataConfidence: ['Medium'],
+
+    });
+
+  }
+
+  get f() {
+    return this.kpiForm.controls;
+  }
+
+  continue(): void {
+
     this.submitted = true;
 
     if (this.kpiForm.invalid) {
-    return;
+      return;
     }
 
-    console.log(this.kpiForm.value);
+    console.log('KPI Created:', this.kpiForm.value);
+     alert('✅ KPI created successfully.');
+   
+
     this.dialogRef.close(this.kpiForm.value);
+
   }
- 
-  closeDialog() {
+
+  nextStep(): void {
+
+    this.submitted = true;
+    if (
+      this.f['kpiName'].invalid ||
+      this.f['category'].invalid ||
+      this.f['department'].invalid ||
+      this.f['owner'].invalid
+    ) {
+      return;
+    }
+
+    this.currentStep = 2;
+
+  }
+
+  previousStep(): void {
+    this.currentStep = 1;
+  }
+
+  closeDialog(): void {
     this.dialogRef.close();
   }
+
 }

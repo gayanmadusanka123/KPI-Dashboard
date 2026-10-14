@@ -17,8 +17,10 @@ export class KpiManagement {
 
   openAddKpiDialog(): void {
     this.dialog.open(AddKpiDialog, {
-      width: '800px',
-      disableClose: true
+      width: '900px',
+      maxWidth: '95vw',
+      disableClose: true,
+      panelClass: 'kpi-dialog-panel'
     });
   }
 
