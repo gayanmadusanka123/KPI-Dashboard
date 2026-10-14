@@ -1,17 +1,20 @@
-<div class = "page-header">
-    
-    <div>
-        <h2>KPI Management </h2>
-        <p>Track, compare, and manage all key performance indicators</p>
+<div class="page">
+    <div class = "page-header">
+        <div>
+            <h2>KPI Management </h2>
+            <p>Track, compare, and manage all key performance indicators</p>
+        </div>
+
+        <button class="add-btn" (click)="openAddKpiDialog()">
+            + Add New KPI
+        </button>
     </div>
 
-    <button class="add-btn" (click)="openAddKpiDialog()">
-        + Add New KPI
-    </button>
+    <app-kpi-table
+        [kpis]="kpis">
+    </app-kpi-table>
+
 </div>
 
-<app-kpi-table
-    [kpis]="kpis">
-</app-kpi-table>
 
 
