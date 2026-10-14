@@ -1,5 +1,6 @@
 package com.ucsc.kpi_dashboard.Payload.Dto;
 
+import com.ucsc.kpi_dashboard.Domain.ActiveStatus;
 import com.ucsc.kpi_dashboard.Domain.UserRole;
 import lombok.Data;
 
@@ -17,6 +18,8 @@ public class UserDto {
     private String password;
 
     private UserRole role;
+    private ActiveStatus status;
+    private UUID departmentId;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
