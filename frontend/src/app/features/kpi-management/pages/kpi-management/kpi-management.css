@@ -1,5 +1,8 @@
 .page{
     padding: 24px 32px;
+    min-height: 100%;
+    background: #0f172a;
+    color: #f8fafc;
 }
 
 .page-header{
@@ -28,7 +31,7 @@
 
     margin-top:6px;
 
-    color:#64748b;
+    color:#cbd5e1;
 
 }
 
@@ -58,4 +61,16 @@
 
     background:#1d4ed8;
 
+}
+
+@media (max-width: 768px) {
+    .page {
+        padding: 20px 16px;
+    }
+
+    .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+    }
 }
