@@ -1,0 +1,19 @@
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 56px;
+    padding: 0 30px;
+    background: #243247;
+    color: #cbd5e1;
+    border-top: 1px solid #334155;
+    font-size: 13px;
+}
+
+@media (max-width: 768px) {
+    .footer {
+        flex-wrap: wrap;
+        padding: 14px 16px;
+    }
+}
