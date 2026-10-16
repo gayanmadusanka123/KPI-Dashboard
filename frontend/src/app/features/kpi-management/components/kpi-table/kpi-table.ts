@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -7,6 +7,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
 
+
+export interface ReportingPeriod {
+  period: string;
+  targetValue: number;
+  actualValue: number | null;
+  performanceScore: number | null;
+  variance: number | null;
+  variancePct: number | null;
+  status: 'Exceeded' | 'On Track' | 'At Risk' | 'Off Track';
+  notes: string;
+  dataConfidence: 'High' | 'Medium' | 'Low';
+  enteredAt: string;
+}
 
 export interface Kpi {
   id: string;
@@ -21,6 +34,8 @@ export interface Kpi {
   status: 'Exceeded' | 'On Track' | 'At Risk' | 'Off Track';
   trend: 'up' | 'down' | 'flat';
   updated: string;
+  reportingHistory?: ReportingPeriod[];
+  directionOfGood?: 'Higher is Better' | 'Lower is Better';
 }
 
 @Component({
@@ -35,6 +50,7 @@ export interface Kpi {
 export class KpiTable implements OnChanges {
 
   @Input() kpis: Kpi[] = [];
+  @Output() addPeriod = new EventEmitter<Kpi>();
 
   filteredKpis: Kpi[] = [];
 
@@ -44,6 +60,7 @@ export class KpiTable implements OnChanges {
   selectedDepartment = '';
   selectedStatus = '';
   selectedKpi: Kpi | null = null;
+  historyKpi: Kpi | null = null;
   viewMode: 'table' | 'cards' = 'table';
 
 
@@ -118,6 +135,14 @@ export class KpiTable implements OnChanges {
   // openActions(kpi: Kpi): void {
   //   console.log('Actions:', kpi);
   // }
+
+  showReportingHistory(kpi: Kpi | null): void {
+    this.historyKpi = kpi;
+  }
+
+  openAddPeriod(kpi: Kpi | null): void {
+    if (kpi) this.addPeriod.emit(kpi);
+  }
 
   viewKpi(kpi: Kpi): void {
     console.log('View', kpi);

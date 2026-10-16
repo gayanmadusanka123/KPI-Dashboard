@@ -938,3 +938,47 @@
     }
 
 }
+
+.history-panel {
+    margin-top: 20px;
+    padding: 18px;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    background: #1e293b;
+    color: #f8fafc;
+}
+.history-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+.history-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+.history-header p {
+    margin: 5px 0 0;
+    color: #94a3b8;
+    font-size: 12px;
+}
+.history-close {
+    border: 1px solid #475569;
+    background: #334155;
+    color: #f8fafc;
+    border-radius: 7px;
+    padding: 7px 12px;
+    cursor: pointer;
+}
+.history-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+.history-table {
+    min-width: 900px;
+}
+.history-empty {
+    color: #cbd5e1;
+    padding: 16px 0 4px;
+}

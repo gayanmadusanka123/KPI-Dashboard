@@ -1,26 +1,96 @@
 import { Component } from '@angular/core';
-import { MatDialog} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AddKpiDialog } from '../../components/add-kpi-dialog/add-kpi-dialog';
 import { CommonModule } from '@angular/common';
-import { KpiTable,Kpi } from '../../components/kpi-table/kpi-table';
+import { KpiTable, Kpi, ReportingPeriod } from '../../components/kpi-table/kpi-table';
 
 
 @Component({
   selector: 'app-kpi-management',
-  imports: [CommonModule, KpiTable],
+  imports: [CommonModule, KpiTable, MatSnackBarModule],
   templateUrl: './kpi-management.html',
   styleUrl: './kpi-management.css',
 })
 export class KpiManagement {
-  constructor(private dialog: MatDialog) {}
+  constructor(
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
+  ) {}
 
   openAddKpiDialog(): void {
-    this.dialog.open(AddKpiDialog, {
+    const dialogRef = this.dialog.open(AddKpiDialog, {
       width: '900px',
       maxWidth: '95vw',
       disableClose: true,
       panelClass: 'kpi-dialog-panel'
+    });
+
+    dialogRef.afterClosed().subscribe((result: {
+      type: string;
+      kpiData: Record<string, string>;
+    } | undefined) => {
+      if (!result || result.type !== 'create' || !result.kpiData) return;
+
+      const kpi = this.createKpi(result.kpiData);
+      this.kpis = [kpi, ...this.kpis];
+      this.snackBar.open(`KPI "${kpi.name}" created successfully.`, 'Dismiss', {
+        duration: 3000,
+        panelClass: ['success-snackbar']
+      });
+
+      this.openAddPeriodDialog(kpi);
+    });
+  }
+
+  private createKpi(data: Record<string, string>): Kpi {
+    const nextId = this.kpis.reduce((highest, kpi) => {
+      const numericId = Number(kpi.id.replace('KPI-', ''));
+      return Number.isFinite(numericId) ? Math.max(highest, numericId) : highest;
+    }, 0) + 1;
+
+    return {
+      id: `KPI-${String(nextId).padStart(4, '0')}`,
+      name: data['kpiName'],
+      category: data['category'],
+      dept: data['department'],
+      owner: data['owner'],
+      frequency: data['reportingFrequency'],
+      target: '—',
+      actual: '—',
+      score: 0,
+      status: 'On Track',
+      trend: 'flat',
+      updated: 'Just now',
+      reportingHistory: [],
+      directionOfGood: data['directionOfGood'] as Kpi['directionOfGood']
+    };
+  }
+
+  openAddPeriodDialog(kpi: Kpi): void {
+    const dialogRef = this.dialog.open(AddKpiDialog, {
+      width: '900px',
+      maxWidth: '95vw',
+      disableClose: true,
+      panelClass: 'kpi-dialog-panel',
+      data: { mode: 'period', kpi }
+    });
+
+    dialogRef.afterClosed().subscribe((result: { type: string; periodRecord: ReportingPeriod } | undefined) => {
+      if (!result || result.type !== 'period' || !result.periodRecord) return;
+
+      const existing = this.kpis.find(item => item.id === kpi.id);
+      if (!existing) return;
+
+      existing.reportingHistory = [...(existing.reportingHistory ?? []), result.periodRecord];
+      existing.target = String(result.periodRecord.targetValue);
+      existing.actual = result.periodRecord.actualValue === null ? '—' : String(result.periodRecord.actualValue);
+      existing.score = result.periodRecord.performanceScore ?? 0;
+      existing.status = result.periodRecord.status;
+      existing.updated = 'Just now';
+      existing.trend = existing.score > 100 ? 'up' : existing.score < 95 ? 'down' : 'flat';
+      this.kpis = [...this.kpis];
     });
   }
 

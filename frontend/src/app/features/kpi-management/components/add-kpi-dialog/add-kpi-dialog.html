@@ -5,12 +5,12 @@
     <div class="dialog-header">
 
         <div>
-            <h2>Create New KPI</h2>
+            <h2>{{ mode === 'period' ? 'Add Reporting Period' : 'Create New KPI' }}</h2>
             <p>
-                @if (currentStep === 1) {
-                    Step 1 of 2 — Core Definition
+                @if (mode === 'period') {
+                    Add a reporting period for {{ selectedKpi?.name }} ({{ selectedKpi?.id }})
                 } @else {
-                    Step 2 of 2 — Initial KPI Record
+                    Define the KPI details before adding its reporting period
                 }
             </p>
         </div>
@@ -26,7 +26,7 @@
 
     <!-- Body -->
     <div class="dialog-body">
-        @if(currentStep === 1){       
+        @if(mode === 'create'){
 
             <!-- KPI Name + KPI ID -->
             <div class="grid two-column">
@@ -51,7 +51,7 @@
 
                 </div>
 
-                <div class="form-group">
+                <!-- <div class="form-group">
 
                     <label>KPI ID</label>
 
@@ -61,7 +61,7 @@
                         readonly
                         class="readonly">
 
-                </div>
+                </div> -->
 
             </div>
 
@@ -262,7 +262,7 @@
 
             <!-- Tags -->
 
-            <div class="form-group">
+            <!-- <div class="form-group">
 
                 <label>Tags</label>
 
@@ -271,7 +271,7 @@
                     placeholder="revenue, finance, board-level"
                     formControlName="tags">
 
-            </div>
+            </div> -->
 
             <!-- Status -->
 
@@ -292,7 +292,7 @@
 
             <!-- Created / Modified -->
 
-            <div class="grid two-column">
+            <!-- <div class="grid two-column">
 
                 <div class="form-group">
 
@@ -318,7 +318,7 @@
 
                 </div>
 
-            </div>
+            </div> -->
 
             <!-- Notes -->
 
@@ -339,7 +339,7 @@
             </div>
         }
 
-        @if(currentStep === 2){
+        @if(mode === 'period'){
 
             <div class="dialog-body">
 
@@ -358,6 +358,9 @@
                             type="month"
                             formControlName="period">
 
+                        @if (submitted && f['period'].hasError('required')) {
+                            <small class="error">Period is required.</small>
+                        }
                     </div>
 
                     <div class="form-group">
@@ -372,6 +375,12 @@
                             placeholder="Enter target value"
                             formControlName="targetValue">
 
+                        @if (submitted && f['targetValue'].hasError('required')) {
+                            <small class="error">Target value is required.</small>
+                        }
+                        @if (submitted && f['targetValue'].hasError('min')) {
+                            <small class="error">Target must be zero or greater.</small>
+                        }
                     </div>
 
                 </div>
@@ -397,7 +406,7 @@
 
                         <input
                             type="text"
-                            value="Auto Calculated"
+                            [value]="performanceScore === null ? 'Enter actual and non-zero target' : performanceScore + '%'"
                             readonly
                             class="readonly">
 
@@ -415,7 +424,7 @@
 
                         <input
                             type="text"
-                            value="Auto Calculated"
+                            [value]="variance === null ? '—' : variance"
                             readonly
                             class="readonly">
 
@@ -427,7 +436,7 @@
 
                         <input
                             type="text"
-                            value="Auto Calculated"
+                            [value]="variancePct === null ? '—' : variancePct + '%'"
                             readonly
                             class="readonly">
 
@@ -445,7 +454,7 @@
 
                         <input
                             type="text"
-                            value="Auto Assigned"
+                            [value]="periodStatus"
                             readonly
                             class="readonly">
 
@@ -487,7 +496,7 @@
 
                 <!-- Row 5 -->
 
-                <div class="grid two-column">
+                <!-- <div class="grid two-column">
 
                     <div class="form-group">
 
@@ -513,7 +522,7 @@
 
                     </div>
 
-                </div>
+                </div> -->
 
             </div>
 
@@ -525,23 +534,13 @@
 
     <div class="dialog-footer">
 
-        <div class="step-indicator">
+        @if (mode === 'create') {
+        <div class="step-indicator">KPI details</div>
+        } @else {
+        <div class="step-indicator">KPI: {{ selectedKpi?.id }}</div>
+        }
 
-            <span
-                class="dot"
-                [class.active]="currentStep == 1">
-            </span>
-
-            <span
-                class="dot"
-                [class.active]="currentStep == 2">
-            </span>
-
-            Step {{currentStep}} / 2
-
-        </div>
-
-        @if(currentStep === 1){
+        @if(mode === 'create'){
 
             <div class="footer-actions">
 
@@ -557,9 +556,9 @@
                 <button
                     type="button"
                     class="save-btn"
-                    (click)="nextStep()">
+                    (click)="continue()">
 
-                    Continue →
+                    Create KPI
 
                 </button>
 
@@ -567,16 +566,16 @@
 
         }
 
-        @if(currentStep === 2){
+        @if(mode === 'period'){
 
             <div class="footer-actions">
 
                 <button
                     type="button"
                     class="cancel-btn"
-                    (click)="previousStep()">
+                    (click)="closeDialog()">
 
-                    ← Back
+                    Cancel
 
                 </button>
 
@@ -584,7 +583,7 @@
                     type="submit"
                     class="save-btn">
 
-                    Create KPI
+                    {{ mode === 'period' ? 'Add Period' : 'Create KPI' }}
 
                 </button>
 

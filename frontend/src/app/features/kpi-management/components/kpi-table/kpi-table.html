@@ -569,6 +569,22 @@
 
     </button>
 
+    <button mat-menu-item (click)="openAddPeriod(selectedKpi)">
+
+        <mat-icon>add_circle</mat-icon>
+
+        <span>Add Period</span>
+
+    </button>
+
+    <button mat-menu-item (click)="showReportingHistory(selectedKpi)">
+
+        <mat-icon>history</mat-icon>
+
+        <span>Reporting History</span>
+
+    </button>
+
     <button mat-menu-item (click)="editKpi(selectedKpi!)">
 
         <mat-icon>edit</mat-icon>
@@ -601,4 +617,53 @@
 
 </div>
 
+}
+
+@if (historyKpi) {
+<div class="history-panel">
+    <div class="history-header">
+        <div>
+            <h3>Reporting History — {{ historyKpi.name }}</h3>
+            <p>{{ historyKpi.id }} · {{ historyKpi.reportingHistory?.length ?? 0 }} period(s)</p>
+        </div>
+        <button type="button" class="history-close" (click)="historyKpi = null">Close</button>
+    </div>
+
+    @if ((historyKpi.reportingHistory?.length ?? 0) > 0) {
+    <div class="history-table-wrap">
+        <table class="register history-table">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Target</th>
+                    <th>Actual</th>
+                    <th>Score</th>
+                    <th>Variance</th>
+                    <th>Variance %</th>
+                    <th>Status</th>
+                    <th>Confidence</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (record of (historyKpi.reportingHistory ?? []); track record.enteredAt + record.period) {
+                <tr>
+                    <td class="mono">{{ record.period }}</td>
+                    <td class="mono">{{ record.targetValue }}</td>
+                    <td class="mono">{{ record.actualValue ?? '—' }}</td>
+                    <td class="mono">{{ record.performanceScore === null ? '—' : record.performanceScore + '%' }}</td>
+                    <td class="mono">{{ record.variance ?? '—' }}</td>
+                    <td class="mono">{{ record.variancePct === null ? '—' : record.variancePct + '%' }}</td>
+                    <td>{{ record.status }}</td>
+                    <td>{{ record.dataConfidence }}</td>
+                    <td>{{ record.notes || '—' }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    } @else {
+    <p class="history-empty">No reporting periods have been recorded for this KPI yet.</p>
+    }
+</div>
 }

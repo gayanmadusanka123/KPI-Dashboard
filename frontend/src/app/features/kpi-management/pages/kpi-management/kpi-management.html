@@ -11,7 +11,8 @@
     </div>
 
     <app-kpi-table
-        [kpis]="kpis">
+        [kpis]="kpis"
+        (addPeriod)="openAddPeriodDialog($event)">
     </app-kpi-table>
 
 </div>
