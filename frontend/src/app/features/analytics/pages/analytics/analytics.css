@@ -1,0 +1,13 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #0B1120;
+}
+
+.analytics-page {
+  max-width: 1440px;
+  min-height: 100vh;
+}
+
+.analytics-page { max-width: 1440px; }
+.analytics-select { min-width: 100px; }
