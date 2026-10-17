@@ -3,7 +3,13 @@ import { Auth } from './pages/auth/auth';
 
 export const AUTH_ROUTES: Routes = [
   {
-    path: '',
-    component: Auth
+    path: 'login',
+    component: Auth,
+    data: { mode: 'login' }
+  },
+  {
+    path: 'signup',
+    component: Auth,
+    data: { mode: 'signup' }
   }
 ];

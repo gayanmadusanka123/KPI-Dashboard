@@ -1,1 +1,65 @@
-<p>auth works!</p>
+<main class="auth-page">
+  <a class="auth-brand" routerLink="/">
+    <span class="brand-mark">K</span>
+    <span>KPI Dashboard</span>
+  </a>
+
+  <section class="auth-card">
+    <div class="auth-heading">
+      <span class="eyebrow">{{ isSignup ? 'Start measuring better' : 'Welcome back' }}</span>
+      <h1>{{ isSignup ? 'Create your account' : 'Sign in to your workspace' }}</h1>
+      <p>{{ isSignup ? 'Set up your account and bring your KPIs into focus.' : 'Enter your details to continue to your dashboard.' }}</p>
+    </div>
+
+    @if (successMessage) {
+      <div class="message success">{{ successMessage }}</div>
+    }
+    @if (errorMessage) {
+      <div class="message error" role="alert">{{ errorMessage }}</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      @if (isSignup) {
+        <label>
+          Name
+          <input type="text" formControlName="userName" autocomplete="name" placeholder="Your name">
+          @if (form.controls.userName.touched && form.controls.userName.invalid) {
+            <small>Please enter at least 2 characters.</small>
+          }
+        </label>
+      }
+      <label>
+        Email address
+        <input type="email" formControlName="email" autocomplete="email" placeholder="you@company.com">
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <small>Enter a valid email address.</small>
+        }
+      </label>
+      <label>
+        Password
+        <input type="password" formControlName="password" [autocomplete]="isSignup ? 'new-password' : 'current-password'" placeholder="At least 6 characters">
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <small>Password must contain at least 6 characters.</small>
+        }
+      </label>
+      @if (isSignup) {
+        <label>
+          Confirm password
+          <input type="password" formControlName="confirmPassword" autocomplete="new-password" placeholder="Repeat your password">
+        </label>
+      }
+
+      <button class="submit-button" type="submit" [disabled]="submitting">
+        {{ submitting ? 'Please wait...' : (isSignup ? 'Create account' : 'Sign in') }}
+      </button>
+    </form>
+
+    <p class="switch-copy">
+      {{ isSignup ? 'Already have an account?' : 'New to KPI Dashboard?' }}
+      <a [routerLink]="isSignup ? '/auth/login' : '/auth/signup'">
+        {{ isSignup ? 'Sign in' : 'Create an account' }}
+      </a>
+    </p>
+    <a class="back-link" routerLink="/">← Back to home</a>
+  </section>
+</main>
