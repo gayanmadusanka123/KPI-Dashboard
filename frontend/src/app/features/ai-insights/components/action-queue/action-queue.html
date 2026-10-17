@@ -1,0 +1,8 @@
+<section class="queue card">
+  <div class="queue-head"><p>AI Action Queue</p><app-ai-badge variant="ai">{{openActions()}} open</app-ai-badge></div>
+  <div class="actions">
+    @for(a of actions; track a.label){
+      <div class="action"><div class="check" [class.done]="a.done">@if(a.done){<app-ai-icon name="Check" [size]="10" [color]="C.success"/>}</div><span [class.completed]="a.done">{{a.label}}</span><app-ai-badge [variant]="a.priority==='high'?'danger':'warning'">{{a.priority}}</app-ai-badge></div>
+    }
+  </div>
+</section>
