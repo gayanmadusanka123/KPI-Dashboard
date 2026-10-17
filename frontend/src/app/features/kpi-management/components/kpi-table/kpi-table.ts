@@ -1,27 +1,13 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { Kpi } from '../../models/kpi.models';
 
-
-
-export interface Kpi {
-  id: string;
-  name: string;
-  category: string;
-  dept: string;
-  owner: string;
-  frequency: string;
-  target: string;
-  actual: string;
-  score: number;
-  status: 'Exceeded' | 'On Track' | 'At Risk' | 'Off Track';
-  trend: 'up' | 'down' | 'flat';
-  updated: string;
-}
+export type { Kpi } from '../../models/kpi.models';
 
 @Component({
   selector: 'app-kpi-table',
@@ -35,6 +21,7 @@ export interface Kpi {
 export class KpiTable implements OnChanges {
 
   @Input() kpis: Kpi[] = [];
+  @Output() viewDetails = new EventEmitter<Kpi>();
 
   filteredKpis: Kpi[] = [];
 
@@ -120,7 +107,7 @@ export class KpiTable implements OnChanges {
   // }
 
   viewKpi(kpi: Kpi): void {
-    console.log('View', kpi);
+    this.viewDetails.emit(kpi);
   }
 
   editKpi(kpi: Kpi): void {

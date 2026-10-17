@@ -219,7 +219,7 @@
         <tbody>
             @for (kpi of filteredKpis; track kpi.id) {
 
-            <tr>
+            <tr (click)="viewKpi(kpi)">
 
                 <td>
 
@@ -602,3 +602,4 @@
 </div>
 
 }
+
