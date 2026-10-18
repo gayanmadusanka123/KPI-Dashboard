@@ -68,8 +68,7 @@ export class Auth implements OnInit {
       next: response => {
         this.submitting = false;
         if (this.isSignup) {
-          this.successMessage = response.message || 'Account created. You can now sign in.';
-          void this.router.navigate(['/auth/login'], { queryParams: { registered: 'true' } });
+          void this.router.navigateByUrl('/dashboard');
         } else {
           const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/dashboard';
           void this.router.navigateByUrl(returnUrl);

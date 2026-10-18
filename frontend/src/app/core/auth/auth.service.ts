@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { AuthRequest, AuthResponse, AuthUser } from './auth.models';
+import { API_URL } from '../http/api-url';
 
-const API_URL = 'http://localhost:8081';
 const TOKEN_KEY = 'kpi_access_token';
 const USER_KEY = 'kpi_user';
 
@@ -27,7 +27,9 @@ export class AuthService {
   }
 
   signup(request: AuthRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${API_URL}/auth/signup`, request);
+    return this.http.post<AuthResponse>(`${API_URL}/auth/signup`, request).pipe(
+      tap(response => this.saveSession(response))
+    );
   }
 
   login(request: AuthRequest): Observable<AuthResponse> {
