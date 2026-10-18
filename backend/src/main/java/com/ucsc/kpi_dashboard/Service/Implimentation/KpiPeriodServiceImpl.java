@@ -44,6 +44,16 @@ public class KpiPeriodServiceImpl implements KpiPeriodService {
                         "KPI not found with id: " + periodDto.getKpiId()
                 ));
 
+        if (kpiPeriodRepository.existsByKpiIdAndPeriodStartAndPeriodEnd(
+                periodDto.getKpiId(),
+                periodDto.getPeriodStart(),
+                periodDto.getPeriodEnd()
+        )) {
+            throw new IllegalArgumentException(
+                    "A reporting period already exists for this KPI and date range"
+            );
+        }
+
         KpiPeriod period = new KpiPeriod();
 
         period.setKpi(kpi);
