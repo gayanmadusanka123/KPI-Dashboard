@@ -28,6 +28,7 @@
         <app-kpi-table
             [kpis]="kpis"
             (viewDetails)="openKpiDetails($event)"
+            (edit)="openEditKpiDialog($event)"
             (delete)="deleteKpi($event)">
         </app-kpi-table>
     }

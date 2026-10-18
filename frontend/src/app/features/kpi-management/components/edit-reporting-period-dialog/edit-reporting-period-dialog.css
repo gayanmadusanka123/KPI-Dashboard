@@ -1,0 +1,17 @@
+:host { display: block; }
+.dialog { padding: 24px; color: #12151c; }
+.dialog-header { display: flex; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
+.eyebrow { color: #6b7280; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+h2 { margin: 5px 0; font-size: 22px; }
+p { margin: 0; color: #6b7280; font-size: 13px; }
+.close-button { border: 0; background: transparent; color: #6b7280; cursor: pointer; }
+form { display: grid; gap: 14px; min-width: 340px; }
+label { display: grid; gap: 6px; color: #4b5563; font-size: 12px; font-weight: 700; }
+input, select { box-sizing: border-box; width: 100%; padding: 10px; border: 1px solid #d7dce6; border-radius: 6px; background: white; font: inherit; color: #12151c; }
+.period-range { display: grid; gap: 5px; padding: 11px; border-radius: 7px; background: #f3f4f7; color: #6b7280; font-size: 11px; }
+.period-range strong { color: #12151c; font-size: 13px; }
+.error { color: #c13f3f; font-size: 11px; }
+.actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 8px; }
+.secondary-button, .primary-button { border: 0; border-radius: 7px; padding: 10px 14px; font-weight: 700; cursor: pointer; }
+.secondary-button { background: #eef0f4; color: #4b5563; }
+.primary-button { background: #1c2541; color: white; }

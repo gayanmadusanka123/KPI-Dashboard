@@ -7,11 +7,14 @@
   <div class="detail-header">
     <div>
       <a class="back-link" routerLink="/kpi-management">← KPI Register</a>
-      <div class="eyebrow">{{ kpi.id }} · {{ kpi.category }}</div>
+      <div class="eyebrow">{{ kpi.code || kpi.id }} · {{ kpi.category }}</div>
       <h1>{{ kpi.name }}</h1>
       <p>Owned by {{ kpi.owner }} · Updated {{ kpi.updated }}</p>
     </div>
-    <button class="period-button" type="button" (click)="openAddPeriodDialog()">＋ Add reporting period</button>
+    <div class="header-actions">
+      <button class="secondary-period-button" type="button" (click)="openEditKpiDialog()">Edit KPI</button>
+      <button class="period-button" type="button" (click)="openAddPeriodDialog()">＋ Add reporting period</button>
+    </div>
   </div>
 
   <section class="overview-grid" aria-label="KPI details">
@@ -32,7 +35,9 @@
         <h2>Reporting data</h2>
         <p>Review submitted values for each reporting period.</p>
       </div>
-      <span class="period-count">{{ kpi.reportingHistory.length }} period{{ kpi.reportingHistory.length === 1 ? '' : 's' }}</span>
+      <div class="section-actions">
+        <span class="period-count">{{ kpi.reportingHistory.length }} period{{ kpi.reportingHistory.length === 1 ? '' : 's' }}</span>
+      </div>
     </div>
 
     @if (kpi.reportingHistory.length > 0) {
@@ -42,16 +47,19 @@
           <tr><th>Period</th><th>Target</th><th>Actual</th><th>Score</th><th>Variance</th><th>Status</th><th>Confidence</th><th>Actions</th></tr>
         </thead>
         <tbody>
-          @for (period of kpi.reportingHistory; track period.enteredAt + period.period) {
+          @for (period of kpi.reportingHistory; track period.periodId) {
           <tr>
-            <td class="period-name"><strong>{{ period.period }}</strong><small>Entered {{ period.enteredAt | date:'dd MMM yyyy, HH:mm' }}</small></td>
+            <td class="period-name"><strong>{{ period.period }}</strong><small>Modified {{ period.modifiedAt || period.enteredAt | date:'dd MMM yyyy, HH:mm' }}</small></td>
             <td>{{ period.targetValue }}</td>
             <td>{{ period.actualValue ?? '—' }}</td>
             <td>{{ period.performanceScore === null ? '—' : period.performanceScore + '%' }}</td>
             <td>{{ period.variance === null ? '—' : period.variance }}<small>{{ period.variancePct === null ? '' : ' (' + period.variancePct + '%)' }}</small></td>
             <td><span class="badge" [ngClass]="getStatusClass(period.status)"><span class="dot"></span>{{ period.status }}</span></td>
             <td>{{ period.dataConfidence }}</td>
-            <td><button class="history-button" type="button" (click)="showPeriodHistory(period)">View history</button></td>
+            <td class="row-actions">
+              <button class="history-button" type="button" (click)="editPeriod(period)">Edit</button>
+              <button class="history-button" type="button" (click)="openPeriodHistory(period)">View history</button>
+            </td>
           </tr>
           }
         </tbody>
@@ -62,14 +70,6 @@
     }
   </section>
 
-  @if (selectedPeriod) {
-  <section class="period-history" aria-label="Selected period history">
-    <div><span class="eyebrow">Period history</span><h2>{{ selectedPeriod.period }}</h2><p>Submitted {{ selectedPeriod.enteredAt | date:'dd MMM yyyy, HH:mm' }}</p></div>
-    <button class="close-button" type="button" (click)="closePeriodHistory()">Close</button>
-    <div class="history-detail-grid"><div><span>Target</span><strong>{{ selectedPeriod.targetValue }}</strong></div><div><span>Actual</span><strong>{{ selectedPeriod.actualValue ?? '—' }}</strong></div><div><span>Variance</span><strong>{{ selectedPeriod.variance ?? '—' }}</strong></div><div><span>Confidence</span><strong>{{ selectedPeriod.dataConfidence }}</strong></div></div>
-    <div class="notes"><span>Notes</span><p>{{ selectedPeriod.notes || 'No notes were added for this period.' }}</p></div>
-  </section>
-  }
 </div>
 } @else {
 <div class="missing-page"><h1>KPI not found</h1><p>This KPI may have been removed or the link is invalid.</p><button class="text-button" type="button" (click)="goBack()">Return to KPI register</button></div>

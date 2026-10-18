@@ -1,6 +1,8 @@
 :host { display: block; }
 .detail-page { min-height: 100%; padding: 30px 34px 48px; background: #f3f4f7; color: #12151c; }
 .detail-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 26px; }
+.header-actions { display: flex; gap: 9px; align-items: center; }
+.secondary-period-button { border: 1px solid #d7dce6; border-radius: 8px; background: white; color: #1c2541; padding: 10px 15px; font-weight: 700; cursor: pointer; }
 .back-link { display: inline-block; margin-bottom: 20px; color: #52617a; text-decoration: none; font-size: 13px; font-weight: 600; }
 .back-link:hover { color: #3b6fd6; }
 .eyebrow { display: block; color: #6b7280; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
@@ -18,6 +20,7 @@ h1 { margin: 6px 0 6px; font-size: 32px; letter-spacing: -.02em; }
 .overview-card-primary span:last-child { color: #cbd5e1; }
 .reporting-section, .period-history { padding: 22px; border: 1px solid #e2e4ea; border-radius: 10px; background: white; }
 .section-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+.section-actions { display: flex; align-items: center; gap: 12px; }
 h2 { margin: 4px 0 5px; font-size: 21px; }
 .period-count { color: #6b7280; font-size: 12px; }
 .period-table-wrap { overflow-x: auto; }
@@ -35,6 +38,7 @@ h2 { margin: 4px 0 5px; font-size: 21px; }
 .badge-bad { background: #fbe9e9; color: #c13f3f; }.badge-bad .dot { background: #c13f3f; }
 .history-button { border: 1px solid #d7dce6; border-radius: 6px; padding: 7px 9px; background: white; color: #3b6fd6; font-size: 11px; font-weight: 700; cursor: pointer; }
 .history-button:hover { background: #f3f6fc; }
+.row-actions { display: flex; gap: 6px; }
 .empty-periods { min-height: 150px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; color: #6b7280; font-size: 13px; }
 .empty-periods strong { color: #12151c; font-size: 15px; }
 .empty-periods .text-button { margin-top: 6px; }

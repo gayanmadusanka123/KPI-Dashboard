@@ -1,0 +1,49 @@
+<div class="dialog">
+  <div class="dialog-header">
+    <div>
+      <span class="eyebrow">Reporting period</span>
+      <h2>Edit period data</h2>
+      <p>{{ data.period.period }}</p>
+    </div>
+    <button type="button" class="close-button" (click)="close()" aria-label="Close">✕</button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="period-range">
+      <span>Period range</span>
+      <strong>{{ data.period.periodStart }} – {{ data.period.periodEnd }}</strong>
+    </div>
+
+    <label>
+      Target value
+      <input type="number" min="0" formControlName="targetValue">
+    </label>
+    @if (form.controls.targetValue.invalid && form.controls.targetValue.touched) {
+      <small class="error">Enter a target value of zero or greater.</small>
+    }
+
+    <label>
+      Actual value
+      <input type="number" min="0" formControlName="actualValue" placeholder="Leave empty if not reported">
+    </label>
+
+    <label>
+      Confidence level
+      <select formControlName="dataConfidence">
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+    </label>
+
+    <label>
+      Reason for edit
+      <textarea rows="3" formControlName="editReason" placeholder="Explain why this period was changed"></textarea>
+    </label>
+
+    <div class="actions">
+      <button type="button" class="secondary-button" (click)="close()">Cancel</button>
+      <button type="submit" class="primary-button">Save changes</button>
+    </div>
+  </form>
+</div>

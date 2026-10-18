@@ -23,6 +23,7 @@ export class KpiTable implements OnChanges {
   @Input() kpis: Kpi[] = [];
   @Output() viewDetails = new EventEmitter<Kpi>();
   @Output() delete = new EventEmitter<Kpi>();
+  @Output() edit = new EventEmitter<Kpi>();
 
   filteredKpis: Kpi[] = [];
 
@@ -130,7 +131,7 @@ export class KpiTable implements OnChanges {
   }
 
   editKpi(kpi: Kpi): void {
-    console.log('Edit', kpi);
+    this.edit.emit(kpi);
   }
 
   deleteKpi(kpi: Kpi): void {

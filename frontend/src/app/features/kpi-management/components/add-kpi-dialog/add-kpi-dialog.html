@@ -5,12 +5,12 @@
     <div class="dialog-header">
 
         <div>
-            <h2>{{ mode === 'period' ? 'Add Reporting Period' : 'Create New KPI' }}</h2>
+            <h2>{{ mode === 'period' ? 'Add Reporting Period' : mode === 'edit' ? 'Edit KPI' : 'Create New KPI' }}</h2>
             <p>
                 @if (mode === 'period') {
                     Add a reporting period for {{ selectedKpi?.name }} ({{ selectedKpi?.id }})
                 } @else {
-                    Define the KPI details before adding its reporting period
+                    {{ mode === 'edit' ? 'Update the KPI details and save your changes' : 'Define the KPI details before adding its reporting period' }}
                 }
             </p>
         </div>
@@ -29,7 +29,7 @@
         @if (lookupError) {
             <div class="error" role="alert">{{ lookupError }}</div>
         }
-        @if(mode === 'create'){
+        @if(mode === 'create' || mode === 'edit'){
 
             <!-- KPI Name + KPI ID -->
             <div class="grid two-column">
@@ -349,12 +349,17 @@
                             <span class="required">*</span>
                         </label>
 
-                        <input
-                            type="month"
-                            formControlName="period">
+                        @if (periodFrequency === 'weekly') {
+                            <input type="date" formControlName="period">
+                        } @else {
+                            <input type="month" formControlName="period">
+                        }
 
                         @if (submitted && f['period'].hasError('required')) {
                             <small class="error">Period is required.</small>
+                        }
+                        @if (periodError) {
+                            <small class="error">{{ periodError }}</small>
                         }
                     </div>
 
@@ -529,13 +534,13 @@
 
     <div class="dialog-footer">
 
-        @if (mode === 'create') {
+        @if (mode === 'create' || mode === 'edit') {
         <div class="step-indicator">KPI details</div>
         } @else {
         <div class="step-indicator">KPI: {{ selectedKpi?.id }}</div>
         }
 
-        @if(mode === 'create'){
+        @if(mode === 'create' || mode === 'edit'){
 
             <div class="footer-actions">
 
@@ -553,7 +558,7 @@
                     class="save-btn"
                     (click)="continue()">
 
-                    Create KPI
+                    {{ mode === 'edit' ? 'Save changes' : 'Create KPI' }}
 
                 </button>
 
@@ -578,7 +583,7 @@
                     type="submit"
                     class="save-btn">
 
-                    {{ mode === 'period' ? 'Add Period' : 'Create KPI' }}
+                    Add Period
 
                 </button>
 

@@ -240,7 +240,7 @@
 
                             <div class="kpi-id">
 
-                                {{ kpi.id }}
+                                {{ kpi.code || kpi.id }}
 
                             </div>
 
@@ -374,7 +374,7 @@
 
                 <div class="card-name" [title]="kpi.name">{{ kpi.name }}</div>
 
-                <div class="card-id">{{ kpi.id }} · {{ kpi.frequency }}</div>
+                <div class="card-id">{{ kpi.code || kpi.id }} · {{ kpi.frequency }}</div>
 
             </div>
 

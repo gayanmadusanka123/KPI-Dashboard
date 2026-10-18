@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -23,7 +23,8 @@ export class KpiManagement implements OnInit {
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private router: Router,
-    private facade: KpiFacade
+    private facade: KpiFacade,
+    private readonly changeDetector: ChangeDetectorRef
   ) {}
 
   kpis: Kpi[] = [];
@@ -32,9 +33,18 @@ export class KpiManagement implements OnInit {
   private readonly subscriptions = new Subscription();
 
   ngOnInit(): void {
-    this.subscriptions.add(this.facade.kpis$.subscribe(kpis => this.kpis = kpis));
-    this.subscriptions.add(this.facade.loading$.subscribe(loading => this.loading = loading));
-    this.subscriptions.add(this.facade.error$.subscribe(error => this.error = error));
+    this.subscriptions.add(this.facade.kpis$.subscribe(kpis => {
+      this.kpis = kpis;
+      this.changeDetector.detectChanges();
+    }));
+    this.subscriptions.add(this.facade.loading$.subscribe(loading => {
+      this.loading = loading;
+      this.changeDetector.detectChanges();
+    }));
+    this.subscriptions.add(this.facade.error$.subscribe(error => {
+      this.error = error;
+      this.changeDetector.detectChanges();
+    }));
     this.facade.loadKpis();
   }
 
@@ -78,6 +88,45 @@ export class KpiManagement implements OnInit {
           void this.router.navigate(['/kpi-management', kpi.id]);
         }
       });
+    });
+  }
+
+  openEditKpiDialog(kpi: Kpi): void {
+    const dialogRef = this.dialog.open(AddKpiDialog, {
+      width: '900px',
+      maxWidth: '95vw',
+      disableClose: true,
+      panelClass: 'kpi-dialog-panel',
+      data: { mode: 'edit', kpi }
+    });
+
+    dialogRef.afterClosed().subscribe((result: {
+      type: string;
+      kpiData: Record<string, string>;
+    } | undefined) => {
+      if (!result || result.type !== 'edit' || !result.kpiData) return;
+      this.facade.updateKpi(kpi.id, this.toKpiRequest(result.kpiData)).subscribe({
+        next: updated => this.snackBar.open(`KPI "${updated.name}" updated successfully.`, 'Dismiss', {
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        })
+      });
+    });
+  }
+
+  private toKpiRequest(data: Record<string, string>) {
+    return mapKpiFormToRequest({
+      name: data['kpiName'] ?? '',
+      categoryId: data['categoryId'] || null,
+      departmentId: data['departmentId'] || null,
+      ownerId: data['ownerId'] || null,
+      description: data['description'] ?? '',
+      dataSource: data['dataSource'] ?? '',
+      measurementUnit: data['measurementUnit'] ?? '',
+      reportingFrequency: data['reportingFrequency'] ?? '',
+      directionOfGood: data['directionOfGood'] === 'Lower is Better' ? 'Lower is Better' : 'Higher is Better',
+      status: data['status'] === 'INACTIVE' ? 'INACTIVE' : 'ACTIVE',
+      notes: data['notes'] ?? ''
     });
   }
 
