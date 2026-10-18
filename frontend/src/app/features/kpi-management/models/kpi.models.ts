@@ -7,6 +7,7 @@ export interface ReportingPeriod {
   id?: string;
   kpiId?: string;
   periodId?: string;
+  periodSequence?: number;
   period: string;
   periodStart?: string;
   periodEnd?: string;
@@ -17,8 +18,10 @@ export interface ReportingPeriod {
   variancePct: number | null;
   status: KpiStatus;
   notes: string;
+  editReason?: string | null;
   dataConfidence: DataConfidence;
   enteredAt: string;
+  modifiedAt?: string;
 }
 
 export interface Kpi {

@@ -25,3 +25,11 @@ export interface ReportingPeriodFormValue {
   dataConfidence: DataConfidence;
   notes: string;
 }
+
+export interface ReportingPeriodOption {
+  value: string;
+  label: string;
+  start: string;
+  end: string;
+  sequence: number;
+}
