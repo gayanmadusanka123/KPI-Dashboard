@@ -46,7 +46,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ActiveStatus status;
+    private ActiveStatus status = ActiveStatus.ACTIVE;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
