@@ -14,8 +14,11 @@ public class KpiDto {
     private String name;
     private String description;
     private UUID categoryId;
+    private String categoryName;
     private UUID departmentId;
+    private String departmentName;
     private UUID ownerId;
+    private String ownerName;
     private String dataSource;
     private String measurementUnit;
     private String reportingFrequency;

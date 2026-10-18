@@ -9,7 +9,13 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "kpi_periods")
+@Table(
+        name = "kpi_periods",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_kpi_period_range",
+                columnNames = {"kpi_id", "period_start", "period_end"}
+        )
+)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

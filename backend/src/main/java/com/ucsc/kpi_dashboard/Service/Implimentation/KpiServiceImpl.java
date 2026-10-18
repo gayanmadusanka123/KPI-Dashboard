@@ -1,6 +1,7 @@
 package com.ucsc.kpi_dashboard.Service.Implimentation;
 
 import com.ucsc.kpi_dashboard.Mapper.KpiMapper;
+import com.ucsc.kpi_dashboard.Domain.ActiveStatus;
 import com.ucsc.kpi_dashboard.Model.Department;
 import com.ucsc.kpi_dashboard.Model.Kpi;
 import com.ucsc.kpi_dashboard.Model.KpiCategory;
@@ -70,7 +71,7 @@ public class KpiServiceImpl implements KpiService {
     @Transactional(readOnly = true)
     public List<KpiDto> getAllKpis() {
 
-        return kpiRepository.findAll()
+        return kpiRepository.findByStatusNot(ActiveStatus.ARCHIVED)
                 .stream()
                 .map(KpiMapper::toDto)
                 .toList();
@@ -122,7 +123,9 @@ public class KpiServiceImpl implements KpiService {
                         "KPI not found with id: " + id
                 ));
 
-        kpiRepository.delete(kpi);
+        kpi.setStatus(ActiveStatus.ARCHIVED);
+        kpi.setUpdatedAt(LocalDateTime.now());
+        kpiRepository.save(kpi);
     }
 
     private String generateKpiCode() {

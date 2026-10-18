@@ -19,16 +19,31 @@ public class KpiMapper {
                         ? kpi.getCategory().getId()
                         : null
         );
+        dto.setCategoryName(
+                kpi.getCategory() != null
+                        ? kpi.getCategory().getName()
+                        : null
+        );
 
         dto.setDepartmentId(
                 kpi.getDepartment() != null
                         ? kpi.getDepartment().getId()
                         : null
         );
+        dto.setDepartmentName(
+                kpi.getDepartment() != null
+                        ? kpi.getDepartment().getName()
+                        : null
+        );
 
         dto.setOwnerId(
                 kpi.getOwner() != null
                         ? kpi.getOwner().getId()
+                        : null
+        );
+        dto.setOwnerName(
+                kpi.getOwner() != null
+                        ? kpi.getOwner().getUserName()
                         : null
         );
 
