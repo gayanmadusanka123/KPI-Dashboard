@@ -1,4 +1,8 @@
-@if (kpi) {
+@if (loading) {
+<div class="missing-page"><h1>Loading KPI...</h1><p>Retrieving the latest KPI data.</p></div>
+} @else if (error) {
+<div class="missing-page"><h1>Unable to load KPI</h1><p>{{ error }}</p><button class="text-button" type="button" (click)="goBack()">Return to KPI register</button></div>
+} @else if (kpi) {
 <div class="detail-page">
   <div class="detail-header">
     <div>

@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { AddKpiDialog } from '../../components/add-kpi-dialog/add-kpi-dialog';
 import { CommonModule } from '@angular/common';
 import { KpiTable } from '../../components/kpi-table/kpi-table';
 import { Kpi } from '../../models/kpi.models';
-import { KpiStore } from '../../services/kpi-store';
+import { KpiFacade } from '../../state/kpi.facade';
+import { mapKpiFormToRequest } from '../../data-access/mappers/kpi.mapper';
 
 
 @Component({
@@ -21,13 +23,19 @@ export class KpiManagement implements OnInit {
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private router: Router,
-    private store: KpiStore
+    private facade: KpiFacade
   ) {}
 
   kpis: Kpi[] = [];
+  loading = false;
+  error: string | null = null;
+  private readonly subscriptions = new Subscription();
 
   ngOnInit(): void {
-    this.store.kpis$.subscribe(kpis => this.kpis = kpis);
+    this.subscriptions.add(this.facade.kpis$.subscribe(kpis => this.kpis = kpis));
+    this.subscriptions.add(this.facade.loading$.subscribe(loading => this.loading = loading));
+    this.subscriptions.add(this.facade.error$.subscribe(error => this.error = error));
+    this.facade.loadKpis();
   }
 
   openAddKpiDialog(): void {
@@ -44,43 +52,55 @@ export class KpiManagement implements OnInit {
     } | undefined) => {
       if (!result || result.type !== 'create' || !result.kpiData) return;
 
-      const kpi = this.createKpi(result.kpiData);
-      this.store.addKpi(kpi);
-      this.snackBar.open(`KPI "${kpi.name}" created successfully.`, 'Dismiss', {
-        duration: 3000,
-        panelClass: ['success-snackbar']
+      const data = result.kpiData;
+      const request = mapKpiFormToRequest({
+        name: data['kpiName'] ?? '',
+        categoryId: data['categoryId'] || null,
+        departmentId: data['departmentId'] || null,
+        ownerId: data['ownerId'] || null,
+        description: data['description'] ?? '',
+        dataSource: data['dataSource'] ?? '',
+        measurementUnit: data['measurementUnit'] ?? '',
+        reportingFrequency: data['reportingFrequency'] ?? '',
+        directionOfGood: data['directionOfGood'] === 'Lower is Better'
+          ? 'Lower is Better'
+          : 'Higher is Better',
+        status: data['status'] === 'INACTIVE' ? 'INACTIVE' : 'ACTIVE',
+        notes: data['notes'] ?? ''
       });
 
-      this.router.navigate(['/kpi-management', kpi.id]);
+      this.facade.createKpi(request).subscribe({
+        next: kpi => {
+          this.snackBar.open(`KPI "${kpi.name}" created successfully.`, 'Dismiss', {
+            duration: 3000,
+            panelClass: ['success-snackbar']
+          });
+          void this.router.navigate(['/kpi-management', kpi.id]);
+        }
+      });
     });
-  }
-
-  private createKpi(data: Record<string, string>): Kpi {
-    const nextId = this.kpis.reduce((highest, kpi) => {
-      const numericId = Number(kpi.id.replace('KPI-', ''));
-      return Number.isFinite(numericId) ? Math.max(highest, numericId) : highest;
-    }, 0) + 1;
-
-    return {
-      id: `KPI-${String(nextId).padStart(4, '0')}`,
-      name: data['kpiName'],
-      category: data['category'],
-      dept: data['department'],
-      owner: data['owner'],
-      frequency: data['reportingFrequency'],
-      target: '—',
-      actual: '—',
-      score: 0,
-      status: 'On Track',
-      trend: 'flat',
-      updated: 'Just now',
-      reportingHistory: [],
-      directionOfGood: data['directionOfGood'] as Kpi['directionOfGood']
-    };
   }
 
   openKpiDetails(kpi: Kpi): void {
     this.router.navigate(['/kpi-management', kpi.id]);
   }
 
+  reload(): void {
+    this.facade.loadKpis();
+  }
+
+  deleteKpi(kpi: Kpi): void {
+    if (!window.confirm(`Delete KPI "${kpi.name}"?`)) return;
+
+    this.facade.deleteKpi(kpi.id).subscribe({
+      next: () => this.snackBar.open('KPI deleted successfully.', 'Dismiss', {
+        duration: 3000,
+        panelClass: ['success-snackbar']
+      })
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
 }

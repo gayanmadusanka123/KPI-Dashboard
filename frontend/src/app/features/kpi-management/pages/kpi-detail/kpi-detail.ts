@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { AddKpiDialog } from '../../components/add-kpi-dialog/add-kpi-dialog';
 import { Kpi, ReportingPeriod } from '../../models/kpi.models';
-import { KpiStore } from '../../services/kpi-store';
+import { KpiFacade } from '../../state/kpi.facade';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-kpi-detail',
@@ -14,24 +15,28 @@ import { KpiStore } from '../../services/kpi-store';
   templateUrl: './kpi-detail.html',
   styleUrl: './kpi-detail.css'
 })
-export class KpiDetail implements OnInit {
+export class KpiDetail implements OnInit, OnDestroy {
   kpi: Kpi | undefined;
   selectedPeriod: ReportingPeriod | null = null;
+  loading = false;
+  error: string | null = null;
+  private readonly subscriptions = new Subscription();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
-    private store: KpiStore
+    private facade: KpiFacade
   ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    this.kpi = id ? this.store.getById(id) : undefined;
+    if (!id) return;
 
-    this.store.kpis$.subscribe(kpis => {
-      if (id) this.kpi = kpis.find(item => item.id === id);
-    });
+    this.subscriptions.add(this.facade.selectedKpi$.subscribe(kpi => this.kpi = kpi ?? undefined));
+    this.subscriptions.add(this.facade.loadingDetails$.subscribe(loading => this.loading = loading));
+    this.subscriptions.add(this.facade.error$.subscribe(error => this.error = error));
+    this.facade.loadKpi(id);
   }
 
   openAddPeriodDialog(): void {
@@ -47,7 +52,11 @@ export class KpiDetail implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: { type: string; periodRecord: ReportingPeriod } | undefined) => {
       if (result?.type === 'period' && result.periodRecord && this.kpi) {
-        this.store.addReportingPeriod(this.kpi.id, result.periodRecord);
+        this.facade.addReportingPeriod(this.kpi.id, result.periodRecord).subscribe({
+          next: () => {
+            this.selectedPeriod = null;
+          }
+        });
       }
     });
   }
@@ -69,7 +78,12 @@ export class KpiDetail implements OnInit {
       Exceeded: 'badge-info',
       'On Track': 'badge-good',
       'At Risk': 'badge-warn',
-      'Off Track': 'badge-bad'
+      'Off Track': 'badge-bad',
+      'Awaiting actual': 'badge-info'
     }[status] ?? 'badge-info';
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

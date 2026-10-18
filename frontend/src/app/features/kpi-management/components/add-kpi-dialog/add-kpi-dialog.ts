@@ -2,6 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { KpiLookupApiService } from '../../data-access/api/kpi-lookup-api.service';
+import { DepartmentDto, KpiCategoryDto, UserDto } from '../../data-access/dto/lookup.dto';
 
 @Component({
   selector: 'app-add-kpi-dialog',
@@ -17,10 +19,15 @@ export class AddKpiDialog implements OnInit {
   kpiForm!: FormGroup;
   submitted = false;
   currentStep = 1;
+  categories: KpiCategoryDto[] = [];
+  departments: DepartmentDto[] = [];
+  users: UserDto[] = [];
+  lookupError: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<AddKpiDialog>,
+    private readonly lookupApi: KpiLookupApiService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.mode = data?.mode === 'period' ? 'period' : 'create';
@@ -42,11 +49,11 @@ export class AddKpiDialog implements OnInit {
         ]
       ],
 
-      category: ['', Validators.required],
+      categoryId: ['', Validators.required],
 
-      department: ['', Validators.required],
+      departmentId: ['', Validators.required],
 
-      owner: ['', Validators.required],
+      ownerId: ['', Validators.required],
 
       // Optional fields
       description: [
@@ -66,7 +73,7 @@ export class AddKpiDialog implements OnInit {
 
       tags: [''],
 
-      status: ['Active'],
+      status: ['ACTIVE'],
 
       notes: [''],
 
@@ -81,6 +88,21 @@ export class AddKpiDialog implements OnInit {
       dataConfidence: ['Medium'],
 
     });
+
+    if (this.mode === 'create') {
+      this.lookupApi.getCategories().subscribe({
+        next: categories => this.categories = categories.filter(item => item.status === 'ACTIVE'),
+        error: () => this.lookupError = 'Unable to load KPI categories.'
+      });
+      this.lookupApi.getDepartments().subscribe({
+        next: departments => this.departments = departments.filter(item => item.status === 'ACTIVE'),
+        error: () => this.lookupError = 'Unable to load departments.'
+      });
+      this.lookupApi.getUsers().subscribe({
+        next: users => this.users = users.filter(item => item.status === null || item.status === 'ACTIVE'),
+        error: () => this.lookupError = 'Unable to load KPI owners.'
+      });
+    }
 
   }
 
@@ -130,9 +152,9 @@ export class AddKpiDialog implements OnInit {
 
     if (
       this.f['kpiName'].invalid ||
-      this.f['category'].invalid ||
-      this.f['department'].invalid ||
-      this.f['owner'].invalid ||
+      this.f['categoryId'].invalid ||
+      this.f['departmentId'].invalid ||
+      this.f['ownerId'].invalid ||
       this.f['measurementUnit'].invalid ||
       this.f['reportingFrequency'].invalid
     ) {

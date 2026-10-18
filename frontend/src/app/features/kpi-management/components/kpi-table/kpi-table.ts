@@ -22,6 +22,7 @@ export class KpiTable implements OnChanges {
 
   @Input() kpis: Kpi[] = [];
   @Output() viewDetails = new EventEmitter<Kpi>();
+  @Output() delete = new EventEmitter<Kpi>();
 
   filteredKpis: Kpi[] = [];
 
@@ -32,6 +33,24 @@ export class KpiTable implements OnChanges {
   selectedStatus = '';
   selectedKpi: Kpi | null = null;
   viewMode: 'table' | 'cards' = 'table';
+
+  get onTrackCount(): number {
+    return this.kpis.filter(kpi => kpi.status === 'On Track').length;
+  }
+
+  get atRiskCount(): number {
+    return this.kpis.filter(kpi => kpi.status === 'At Risk').length;
+  }
+
+  get offTrackCount(): number {
+    return this.kpis.filter(kpi => kpi.status === 'Off Track').length;
+  }
+
+  get averageScore(): number {
+    const scored = this.kpis.filter(kpi => Number.isFinite(kpi.score) && kpi.score > 0);
+    if (scored.length === 0) return 0;
+    return Number((scored.reduce((sum, kpi) => sum + kpi.score, 0) / scored.length).toFixed(1));
+  }
 
 
   sortColumn = '';
@@ -115,7 +134,7 @@ export class KpiTable implements OnChanges {
   }
 
   deleteKpi(kpi: Kpi): void {
-    console.log('Delete', kpi);
+    this.delete.emit(kpi);
   }
 
   sparklines: { [key: string]: number[] } = {

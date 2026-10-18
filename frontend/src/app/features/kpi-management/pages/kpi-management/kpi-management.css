@@ -63,6 +63,29 @@
 
 }
 
+.state-message {
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    padding: 32px;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    color: #cbd5e1;
+    text-align: center;
+}
+
+.state-message strong {
+    color: #f8fafc;
+    font-size: 18px;
+}
+
+.state-error {
+    border-color: #7f1d1d;
+}
+
 @media (max-width: 768px) {
     .page {
         padding: 20px 16px;

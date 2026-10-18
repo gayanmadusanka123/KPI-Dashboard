@@ -26,6 +26,9 @@
 
     <!-- Body -->
     <div class="dialog-body">
+        @if (lookupError) {
+            <div class="error" role="alert">{{ lookupError }}</div>
+        }
         @if(mode === 'create'){
 
             <!-- KPI Name + KPI ID -->
@@ -90,19 +93,16 @@
                         <span class="required">*</span>
                     </label>
 
-                    <select formControlName="category">
+                    <select formControlName="categoryId">
 
                         <option value="">Select Category</option>
-
-                        <option value="Financial">Financial</option>
-                        <option value="Customer">Customer</option>
-                        <option value="Operations">Operations</option>
-                        <option value="People">People</option>
-                        <option value="Growth">Growth</option>
+                        @for (category of categories; track category.id) {
+                            <option [value]="category.id">{{ category.name }}</option>
+                        }
 
                     </select>
 
-                    @if (submitted && f['category'].hasError('required')) {
+                    @if (submitted && f['categoryId'].hasError('required')) {
                         <small class="error">
                             Category is required.
                         </small>
@@ -117,20 +117,16 @@
                         <span class="required">*</span>
                     </label>
 
-                    <select formControlName="department">
+                    <select formControlName="departmentId">
 
                         <option value="">Select Department</option>
-
-                        <option value="Sales">Sales</option>
-                        <option value="CX">CX</option>
-                        <option value="People Ops">People Ops</option>
-                        <option value="Manufacturing">Manufacturing</option>
-                        <option value="Marketing">Marketing</option>
-                        <option value="Logistics">Logistics</option>
+                        @for (department of departments; track department.id) {
+                            <option [value]="department.id">{{ department.name }}</option>
+                        }
 
                     </select>
 
-                    @if (submitted && f['department'].hasError('required')) {
+                    @if (submitted && f['departmentId'].hasError('required')) {
                         <small class="error">
                             Department is required.
                         </small>
@@ -151,17 +147,16 @@
                         <span class="required">*</span>
                     </label>
 
-                    <select formControlName="owner">
+                    <select formControlName="ownerId">
 
                         <option value="">Select Owner</option>
-
-                        <option value="Amara Fernando">Amara Fernando</option>
-                        <option value="D. Perera">D. Perera</option>
-                        <option value="S. Jayasuriya">S. Jayasuriya</option>
+                        @for (user of users; track user.id) {
+                            <option [value]="user.id">{{ user.userName }} ({{ user.email }})</option>
+                        }
 
                     </select>
 
-                    @if (submitted && f['owner'].hasError('required')) {
+                    @if (submitted && f['ownerId'].hasError('required')) {
                         <small class="error">
                             Owner is required.
                         </small>

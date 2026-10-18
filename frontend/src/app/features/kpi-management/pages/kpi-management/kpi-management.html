@@ -10,12 +10,26 @@
         </button>
     </div>
 
-    <app-kpi-table
-        [kpis]="kpis"
-        (viewDetails)="openKpiDetails($event)">
-    </app-kpi-table>
+    @if (loading) {
+        <div class="state-message" role="status">Loading KPIs...</div>
+    } @else if (error) {
+        <div class="state-message state-error" role="alert">
+            <strong>Unable to load KPIs</strong>
+            <span>{{ error }}</span>
+            <button type="button" class="add-btn" (click)="reload()">Try again</button>
+        </div>
+    } @else if (kpis.length === 0) {
+        <div class="state-message">
+            <strong>No KPIs found</strong>
+            <span>Create the first KPI to start tracking performance.</span>
+            <button type="button" class="add-btn" (click)="openAddKpiDialog()">Add New KPI</button>
+        </div>
+    } @else {
+        <app-kpi-table
+            [kpis]="kpis"
+            (viewDetails)="openKpiDetails($event)"
+            (delete)="deleteKpi($event)">
+        </app-kpi-table>
+    }
 
 </div>
-
-
-
