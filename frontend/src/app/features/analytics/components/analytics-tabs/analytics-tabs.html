@@ -1,0 +1,11 @@
+<div class="flex gap-1 p-1 mb-5 rounded-2xl border" [style.backgroundColor]="C.card" [style.borderColor]="C.border">
+  @for (t of tabs; track t.id) {
+    <button type="button" (click)="select(t.id)"
+      class="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer"
+      [style.backgroundColor]="active() === t.id ? C.primary : 'transparent'"
+      [style.color]="active() === t.id ? '#fff' : C.sub">
+      <app-icon [name]="t.icon" [size]="15" [color]="active() === t.id ? '#fff' : C.sub" />
+      <span class="hidden sm:inline">{{ t.label }}</span>
+    </button>
+  }
+</div>

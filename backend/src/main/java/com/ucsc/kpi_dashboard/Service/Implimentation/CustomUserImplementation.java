@@ -28,7 +28,7 @@ public class CustomUserImplementation implements UserDetailsService {
             throw new UsernameNotFoundException("user not found");
         }
 
-        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + user.getRole().toString());
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(user.getRole().toString());
 
         Collection<GrantedAuthority> authorities = Collections.singleton(grantedAuthority);
 

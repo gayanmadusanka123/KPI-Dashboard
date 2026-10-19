@@ -21,7 +21,7 @@
         </div>
         <div class="summary-value good">
 
-            27
+            {{onTrackCount}}
 
             <span>64%</span>
         </div>
@@ -35,7 +35,7 @@
         </div>
         <div class="summary-value warn">
 
-            9
+            {{atRiskCount}}
 
         </div>
     </div>
@@ -48,7 +48,7 @@
         </div>
         <div class="summary-value bad">
 
-            6
+            {{offTrackCount}}
 
         </div>
     </div>
@@ -61,13 +61,7 @@
         </div>
         <div class="summary-value">
 
-            96.4
-
-            <span class="good">
-
-                +2.1%
-
-            </span>
+            {{averageScore}}
         </div>
     </div>
 </div>
@@ -219,7 +213,7 @@
         <tbody>
             @for (kpi of filteredKpis; track kpi.id) {
 
-            <tr>
+            <tr (click)="viewKpi(kpi)">
 
                 <td>
 
@@ -246,7 +240,7 @@
 
                             <div class="kpi-id">
 
-                                {{ kpi.id }}
+                                {{ kpi.code || kpi.id }}
 
                             </div>
 
@@ -380,7 +374,7 @@
 
                 <div class="card-name" [title]="kpi.name">{{ kpi.name }}</div>
 
-                <div class="card-id">{{ kpi.id }} · {{ kpi.frequency }}</div>
+                <div class="card-id">{{ kpi.code || kpi.id }} · {{ kpi.frequency }}</div>
 
             </div>
 

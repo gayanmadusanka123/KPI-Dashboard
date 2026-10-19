@@ -1,194 +1,597 @@
-<form [formGroup]="kpiForm" (ngSubmit)="onSubmit()">
+<div class="dialog">
+<form  class="dialog-form" [formGroup]="kpiForm" (ngSubmit)="continue()">
 
+    <!-- Header -->
     <div class="dialog-header">
-        <h2>Add New KPI</h2>
 
-        <button type="button" class="close-btn" (click)="closeDialog()">
+        <div>
+            <h2>{{ mode === 'period' ? 'Add Reporting Period' : mode === 'edit' ? 'Edit KPI' : 'Create New KPI' }}</h2>
+            <p>
+                @if (mode === 'period') {
+                    Add a reporting period for {{ selectedKpi?.name }} ({{ selectedKpi?.id }})
+                } @else {
+                    {{ mode === 'edit' ? 'Update the KPI details and save your changes' : 'Define the KPI details before adding its reporting period' }}
+                }
+            </p>
+        </div>
+
+        <button
+            type="button"
+            class="close-btn"
+            (click)="closeDialog()">
             ✕
         </button>
+
     </div>
 
+    <!-- Body -->
     <div class="dialog-body">
-        <div class="form-group">
-            <label for="kpiName">KPI Name </label>
+        @if (lookupError) {
+            <div class="error" role="alert">{{ lookupError }}</div>
+        }
+        @if(mode === 'create' || mode === 'edit'){
 
-            <input id="kpiName" type="text" placeholder="Enter KPI name" formControlName="kpiName">
+            <!-- KPI Name + KPI ID -->
+            <div class="grid two-column">
 
-            @if (submitted &&
-            kpiForm.controls.kpiName.hasError('required')) {
+                <div class="form-group">
 
-            <small class="error">
-                KPI Name is required.
-            </small>
-            }
+                    <label>
+                        KPI Name
+                        <span class="required">*</span>
+                    </label>
 
-            @if (submitted &&
-            kpiForm.controls.kpiName.hasError('minlength')) {
+                    <input
+                        type="text"
+                        placeholder="e.g. Monthly Revenue"
+                        formControlName="kpiName">
 
-            <small class="error">
-                Minimum 3 characters required.
-            </small>
-            }
+                    @if (submitted && f['kpiName'].hasError('required')) {
+                        <small class="error">
+                            KPI Name is required.
+                        </small>
+                    }
 
-            @if (submitted &&
-            kpiForm.controls.kpiName.hasError('maxlength')) {
+                </div>
 
-            <small class="error">
-                Maximum 100 characters allowed.
-            </small>
-            }
-        </div>
+                <!-- <div class="form-group">
 
-        <div class="form-group">
-            <label for="description">Description</label>
+                    <label>KPI ID</label>
 
-            <textarea id="description" rows="3" placeholder="Enter description" formControlName="description">
+                    <input
+                        type="text"
+                        value="Auto Generated"
+                        readonly
+                        class="readonly">
+
+                </div> -->
+
+            </div>
+
+            <!-- Description -->
+
+            <div class="form-group">
+
+                <label>Description</label>
+
+                <textarea
+                    rows="3"
+                    placeholder="What does this KPI measure?"
+                    formControlName="description">
                 </textarea>
 
-            @if (submitted &&
-                kpiForm.controls.description.hasError('maxlength')) {
-
-                <small class="error">
-                    Maximum 500 characters allowed.
-                </small>
-            }
-        </div>
-
-        <div class="grid">
-            <div class="form-group">
-                <label>Category</label>
-
-                <select formControlName="category">
-                    
-                    <option value="Financial">Financial</option>
-                    <option value="Customer">Customer</option>
-                    <option value="Operations">Operations</option>
-                    <option value="Sales">Sales</option>
-                    <option value="Marketing">Marketing</option>
-                    <option value="Human Resources">Human Resources</option>
-                </select>
-
-                @if (submitted &&
-                    kpiForm.controls.category.hasError('required')) {
-
-                    <small class="error">
-                        Category is required.
-                    </small>
-                }
             </div>
 
-            <div class="form-group">
-                <label>Department</label>
+            <!-- Category + Department -->
 
-                <select formControlName="department">
-                    
-                    <option value="Finance">Finance</option>
-                    <option value="Sales">Sales</option>
-                    <option value="Marketing">Marketing</option>
-                    <option value="HR">HR</option>
-                    <option value="Operations">Operations</option>
-                    <option value="IT">IT</option>
-                </select>
+            <div class="grid two-column">
 
-                @if (submitted &&
-                kpiForm.controls.department.hasError('required')) {
+                <div class="form-group">
 
-                <small class="error">
-                    Department is required.
-                </small>
+                    <label>
+                        Category
+                        <span class="required">*</span>
+                    </label>
 
-                }
+                    <select formControlName="categoryId">
+
+                        <option value="">Select Category</option>
+                        @for (category of categories; track category.id) {
+                            <option [value]="category.id">{{ category.name }}</option>
+                        }
+
+                    </select>
+
+                    @if (submitted && f['categoryId'].hasError('required')) {
+                        <small class="error">
+                            Category is required.
+                        </small>
+                    }
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Department
+                        <span class="required">*</span>
+                    </label>
+
+                    <select formControlName="departmentId">
+
+                        <option value="">Select Department</option>
+                        @for (department of departments; track department.id) {
+                            <option [value]="department.id">{{ department.name }}</option>
+                        }
+
+                    </select>
+
+                    @if (submitted && f['departmentId'].hasError('required')) {
+                        <small class="error">
+                            Department is required.
+                        </small>
+                    }
+
+                </div>
+
             </div>
 
-            <div class="form-group">
-                <label>Measurement Unit</label>
+                    <!-- Owner + Data Source -->
 
-                <select formControlName="measurementUnit">
-                    
-                    <option value="Percentage">Percentage (%)</option>
-                    <option value="Currency">Currency ($)</option>
-                    <option value="Number">Number</option>
-                    <option value="Hours">Hours</option>
-                    <option value="Days">Days</option>
-                </select>
+            <div class="grid two-column">
 
-                @if (submitted &&
-                kpiForm.controls.measurementUnit.hasError('required')) {
+                <div class="form-group">
 
-                <small class="error">
-                    Measurement Unit is required.
-                </small>
+                    <label>
+                        Owner
+                        <span class="required">*</span>
+                    </label>
 
-                }
+                    <select formControlName="ownerId">
+
+                        <option value="">Select Owner</option>
+                        @for (user of users; track user.id) {
+                            <option [value]="user.id">{{ user.userName }} ({{ user.email }})</option>
+                        }
+
+                    </select>
+
+                    @if (submitted && f['ownerId'].hasError('required')) {
+                        <small class="error">
+                            Owner is required.
+                        </small>
+                    }
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Data Source</label>
+
+                    <input
+                        type="text"
+                        placeholder="Billing System"
+                        formControlName="dataSource">
+
+                </div>
+
             </div>
 
+            <!-- Measurement Unit + Reporting Frequency -->
+
+            <div class="grid two-column">
+
+                <div class="form-group">
+
+                    <label>Measurement Unit
+                        <span class="required">*</span>
+                    </label>
+
+                    <select formControlName="measurementUnit">
+
+                        <option value="">Select Measurement Unit</option>
+
+                        <option value="USD">USD ($)</option>
+                        <option value="Percentage">Percentage (%)</option>
+                        <option value="Count">Count</option>
+                        <option value="Days">Days</option>
+                        <option value="Score">Score (1-5)</option>
+
+                    </select>
+
+                    @if (submitted && f['measurementUnit'].hasError('required')) {
+                        <small class="error">
+                            Measurement Unit is required.
+                        </small>
+                    }
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Reporting Frequency
+                        <span class="required">*</span>
+                    </label>
+
+                    <select formControlName="reportingFrequency">
+                        <option value="">Select Reporting Frequency</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Quarterly">Quarterly</option>
+
+                    </select>
+
+                    @if (submitted && f['reportingFrequency'].hasError('required')) {
+                        <small class="error">
+                            Reporting Frequency is required.
+                        </small>
+                    }
+
+                </div>
+
+            </div>
+            
+            <!-- Direction -->
+
             <div class="form-group">
 
-                <label>Reporting Frequency</label>
+                <label>Direction of Good</label>
 
-                <select formControlName="reportingFrequency">
-                    
-                    <option value="Weekly">Weekly</option>
-                    <option value="Monthly">Monthly</option>
-                    <option value="Quarterly">Quarterly</option>
-                    <option value="Yearly">Yearly</option>
+                <select formControlName="directionOfGood">
+
+                    <option value="Higher is Better">
+                        Higher is Better
+                    </option>
+
+                    <option value="Lower is Better">
+                        Lower is Better
+                    </option>
+
                 </select>
 
-                @if (submitted &&
-                kpiForm.controls.reportingFrequency.hasError('required')) {
-
-                <small class="error">
-                    Reporting Frequency is required.
+                <small class="field-note">
+                    Determines how KPI performance is evaluated and forecast scenarios are interpreted.
                 </small>
 
-                }
             </div>
 
-            <div class="form-group">
-                <label>Direction</label>
+            <!-- Tags -->
 
-                <select formControlName="direction">
-                    <option value="" disabled>Select Direction</option>
-                    <option value="Higher">Higher is Better</option>
-                    <option value="Lower">Lower is Better</option>
-                    <option value="Range">Target Range</option>
-                </select>
+            <!-- <div class="form-group">
 
-                @if (submitted &&
-                kpiForm.controls.direction.hasError('required')) {
+                <label>Tags</label>
 
-                <small class="error">
-                    Direction is required.
-                </small>
+                <input
+                    type="text"
+                    placeholder="revenue, finance, board-level"
+                    formControlName="tags">
 
-                }
-            </div>
+            </div> -->
+
+            <!-- Status -->
 
             <div class="form-group">
+
                 <label>Status</label>
 
                 <select formControlName="status">
+
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
+                    <option value="Under Review">Under Review</option>
+                    <option value="Archived">Archived</option>
+
                 </select>
 
             </div>
-        </div>
+
+            <!-- Created / Modified -->
+
+            <!-- <div class="grid two-column">
+
+                <div class="form-group">
+
+                    <label>Created Date</label>
+
+                    <input
+                        type="text"
+                        value="Auto Generated"
+                        readonly
+                        class="readonly">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Last Modified</label>
+
+                    <input
+                        type="text"
+                        value="Auto Generated"
+                        readonly
+                        class="readonly">
+
+                </div>
+
+            </div> -->
+
+            <!-- Notes -->
+
+            <div class="form-group">
+
+                <label>Notes / Comments</label>
+
+                <textarea
+                    rows="5"
+                    placeholder="Enter additional context, assumptions, methodology, or notes..."
+                    formControlName="notes">
+                </textarea>
+
+                <small class="field-note">
+                    Supports rich text in the production system.
+                </small>
+
+            </div>
+        }
+
+        @if(mode === 'period'){
+
+            <div class="dialog-body">
+
+                <!-- Row 1 -->
+
+                <div class="grid two-column">
+
+                    <div class="form-group">
+
+                        <label>
+                            Period
+                            <span class="required">*</span>
+                        </label>
+
+                        @if (periodFrequency === 'weekly') {
+                            <input type="date" formControlName="period">
+                        } @else {
+                            <input type="month" formControlName="period">
+                        }
+
+                        @if (submitted && f['period'].hasError('required')) {
+                            <small class="error">Period is required.</small>
+                        }
+                        @if (periodError) {
+                            <small class="error">{{ periodError }}</small>
+                        }
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+                            Target Value
+                            <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="number"
+                            placeholder="Enter target value"
+                            formControlName="targetValue">
+
+                        @if (submitted && f['targetValue'].hasError('required')) {
+                            <small class="error">Target value is required.</small>
+                        }
+                        @if (submitted && f['targetValue'].hasError('min')) {
+                            <small class="error">Target must be zero or greater.</small>
+                        }
+                    </div>
+
+                </div>
+
+                <!-- Row 2 -->
+
+                <div class="grid two-column">
+
+                    <div class="form-group">
+
+                        <label>Actual Value</label>
+
+                        <input
+                            type="number"
+                            placeholder="Enter actual value"
+                            formControlName="actualValue">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Performance Score</label>
+
+                        <input
+                            type="text"
+                            [value]="performanceScore === null ? 'Enter actual and non-zero target' : performanceScore + '%'"
+                            readonly
+                            class="readonly">
+
+                    </div>
+
+                </div>
+
+                <!-- Row 3 -->
+
+                <div class="grid two-column">
+
+                    <div class="form-group">
+
+                        <label>Variance</label>
+
+                        <input
+                            type="text"
+                            [value]="variance === null ? '—' : variance"
+                            readonly
+                            class="readonly">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Variance %</label>
+
+                        <input
+                            type="text"
+                            [value]="variancePct === null ? '—' : variancePct + '%'"
+                            readonly
+                            class="readonly">
+
+                    </div>
+
+                </div>
+
+                <!-- Row 4 -->
+
+                <div class="grid two-column">
+
+                    <div class="form-group">
+
+                        <label>Status</label>
+
+                        <input
+                            type="text"
+                            [value]="periodStatus"
+                            readonly
+                            class="readonly">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Data Confidence</label>
+
+                        <select formControlName="dataConfidence">
+
+                            <option value="">Select Confidence</option>
+
+                            <option>High</option>
+
+                            <option>Medium</option>
+
+                            <option>Low</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <!-- Notes -->
+
+                <div class="form-group">
+
+                    <label>Notes</label>
+
+                    <textarea
+                        rows="5"
+                        placeholder="Enter notes..."
+                        formControlName="notes">
+                    </textarea>
+
+                </div>
+
+                <!-- Row 5 -->
+
+                <!-- <div class="grid two-column">
+
+                    <div class="form-group">
+
+                        <label>Entered By</label>
+
+                        <input
+                            type="text"
+                            value="Current Logged User"
+                            readonly
+                            class="readonly">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Entry Date</label>
+
+                        <input
+                            type="text"
+                            value="Auto Generated"
+                            readonly
+                            class="readonly">
+
+                    </div>
+
+                </div> -->
+
+            </div>
+
+        }
+
     </div>
+
+        <!-- Footer -->
 
     <div class="dialog-footer">
 
-        <button type="button" class="cancel-btn" (click)="closeDialog()">
+        @if (mode === 'create' || mode === 'edit') {
+        <div class="step-indicator">KPI details</div>
+        } @else {
+        <div class="step-indicator">KPI: {{ selectedKpi?.id }}</div>
+        }
 
-            Cancel
+        @if(mode === 'create' || mode === 'edit'){
 
-        </button>
+            <div class="footer-actions">
 
-        <button type="submit" class="save-btn" >
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    (click)="closeDialog()">
 
-            Save KPI
+                    Cancel
 
-        </button>
+                </button>
+
+                <button
+                    type="button"
+                    class="save-btn"
+                    (click)="continue()">
+
+                    {{ mode === 'edit' ? 'Save changes' : 'Create KPI' }}
+
+                </button>
+
+            </div>
+
+        }
+
+        @if(mode === 'period'){
+
+            <div class="footer-actions">
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    (click)="closeDialog()">
+
+                    Cancel
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="save-btn">
+
+                    Add Period
+
+                </button>
+
+            </div>
+
+        }
 
     </div>
+
 </form>
+</div>
