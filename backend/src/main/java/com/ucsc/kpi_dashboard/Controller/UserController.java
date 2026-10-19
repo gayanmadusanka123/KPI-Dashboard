@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/users")
@@ -40,5 +41,15 @@ public class UserController {
 
         return ResponseEntity.ok(UserMapper.toDto(user));
 
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserDto>> getAllUsers() throws UserException {
+        return ResponseEntity.ok(
+                userService.getAllUsers()
+                        .stream()
+                        .map(UserMapper::toDto)
+                        .toList()
+        );
     }
 }

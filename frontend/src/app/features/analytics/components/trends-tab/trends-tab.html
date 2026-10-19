@@ -1,0 +1,15 @@
+<div class="space-y-5">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+    <div class="rounded-2xl border p-6" [style.backgroundColor]="C.card" [style.borderColor]="C.border">
+      <p class="font-semibold mb-1" [style.color]="C.text">YoY Growth Rate</p>
+      <p class="text-xs mb-5" [style.color]="C.sub">Quarterly growth percentage</p>
+      <app-cartesian-chart [data]="growthData" xKey="q" [series]="growthSeries" [height]="220"
+        [margin]="{ top: 4, right: 4, bottom: 0, left: -20 }" [gridVertical]="false" />
+    </div>
+    <div class="rounded-2xl border p-6" [style.backgroundColor]="C.card" [style.borderColor]="C.border">
+      <p class="font-semibold mb-5" [style.color]="C.text">MoM Revenue Comparison</p>
+      <app-cartesian-chart [data]="monthlyData" xKey="month" [series]="momSeries" [height]="220"
+        [margin]="{ top: 4, right: 4, bottom: 0, left: -24 }" [gridVertical]="false" />
+    </div>
+  </div>
+</div>

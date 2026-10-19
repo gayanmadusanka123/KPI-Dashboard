@@ -1,10 +1,23 @@
 import { Routes } from '@angular/router';
 import { DashboardLayout } from './layout/dashboard-layout/dashboard-layout';
+import { authGuard, guestGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
+  {
+    path: '',
+    loadChildren: () =>
+      import('./features/landing/routes').then(m => m.LANDING_ROUTES)
+  },
+  {
+    path: 'auth',
+    canActivate: [guestGuard],
+    loadChildren: () =>
+      import('./features/auth/routes').then(m => m.AUTH_ROUTES)
+  },
     {
     path: '',
     component: DashboardLayout,
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -68,5 +81,9 @@ export const routes: Routes = [
           )
       }
     ]
+  },
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];

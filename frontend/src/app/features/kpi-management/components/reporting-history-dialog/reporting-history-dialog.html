@@ -1,0 +1,33 @@
+<div class="dialog">
+  <div class="dialog-header">
+    <div>
+      <span class="eyebrow">Performance log</span>
+      <h2>{{ data.period.period }} history</h2>
+      <p>{{ data.period.periodStart }} – {{ data.period.periodEnd }}</p>
+    </div>
+    <button type="button" class="close-button" (click)="close()" aria-label="Close">✕</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Modified at</th><th>Record</th><th>Previous value</th><th>New value</th><th>Confidence</th><th>Reason</th></tr>
+      </thead>
+      <tbody>
+        @for (item of rows; track item.kind + item.modifiedAt + item.previousValue + item.newValue) {
+          <tr>
+            <td>{{ item.modifiedAt | date:'dd MMM yyyy, HH:mm' }}</td>
+            <td><strong>{{ item.kind }}</strong></td>
+            <td>{{ item.previousValue }}</td>
+            <td>{{ item.newValue }}</td>
+            <td>{{ item.confidence }}</td>
+            <td>{{ item.reason || '—' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if (data.targetHistory.length === 0 && data.actualHistory.length === 0) {
+    <p class="empty-history">No edits have been recorded for this period.</p>
+  }
+</div>

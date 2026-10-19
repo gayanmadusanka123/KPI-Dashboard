@@ -1,1 +1,19 @@
-<p>ai-insights works!</p>
+<div class="ai-page">
+  <header class="page-header">
+    <div class="page-container">
+      <div class="heading">
+        <h1>AI Insights</h1>
+        <p>Real-time intelligence from PulseIQ analysis engine</p>
+      </div>
+      <app-model-status />
+    </div>
+  </header>
+
+  <main class="page-container body-layout">
+    <app-insight-feed class="feed-column" />
+    <aside class="side-column">
+      <app-action-queue />
+      <app-business-health />
+    </aside>
+  </main>
+</div>

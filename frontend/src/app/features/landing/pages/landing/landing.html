@@ -1,1 +1,48 @@
-<p>landing works!</p>
+<main class="landing-page">
+  <nav class="landing-nav">
+    <a class="brand" routerLink="/">
+      <span class="brand-mark">K</span>
+      <span>KPI Dashboard</span>
+    </a>
+    <div class="nav-actions">
+      <span class="nav-question">Already have an account?</span>
+      <a class="button button-ghost" routerLink="/auth/login">Sign in</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow">Performance intelligence, simplified</span>
+      <h1>Turn your business data into <em>clear decisions.</em></h1>
+      <p class="hero-text">
+        Track KPIs, understand performance trends, and give every team a clear
+        view of what needs attention.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-primary" routerLink="/auth/signup">Get started free <span>→</span></a>
+        <a class="learn-link" href="#features">Explore the platform</a>
+      </div>
+      <div class="trust-row"><span class="trust-dot"></span> Built for teams that measure what matters</div>
+    </div>
+
+    <div class="hero-visual" aria-label="KPI dashboard preview">
+      <div class="visual-glow"></div>
+      <div class="preview-card">
+        <div class="preview-top"><span>Performance overview</span><span class="period">This month⌄</span></div>
+        <div class="preview-score"><strong>96.4</strong><span>+2.1% <small>vs last month</small></span></div>
+        <div class="preview-chart"><span class="chart-fill"></span><span class="chart-line"></span></div>
+        <div class="preview-stats">
+          <div><span>On track</span><strong>27</strong></div>
+          <div><span>At risk</span><strong class="warning">9</strong></div>
+          <div><span>KPIs tracked</span><strong>42</strong></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div><span class="feature-icon">◎</span><h2>One source of truth</h2><p>Keep goals, targets, and actual performance together.</p></div>
+    <div><span class="feature-icon">↗</span><h2>See trends early</h2><p>Spot opportunities and risks before they become surprises.</p></div>
+    <div><span class="feature-icon">✓</span><h2>Move with confidence</h2><p>Give every decision the context it deserves.</p></div>
+  </section>
+</main>

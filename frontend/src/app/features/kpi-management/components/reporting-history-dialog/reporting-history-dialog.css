@@ -1,0 +1,14 @@
+:host { display: block; }
+.dialog { padding: 24px; color: #12151c; }
+.dialog-header { display: flex; justify-content: space-between; gap: 24px; margin-bottom: 20px; }
+.eyebrow { color: #6b7280; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+h2 { margin: 5px 0; font-size: 22px; }
+p { margin: 0; color: #6b7280; font-size: 13px; }
+.close-button { border: 0; background: transparent; color: #6b7280; cursor: pointer; }
+.table-wrap { max-height: 65vh; overflow: auto; }
+table { width: 100%; min-width: 720px; border-collapse: collapse; }
+th { padding: 10px; text-align: left; color: #6b7280; background: #fafbfc; border-bottom: 1px solid #e2e4ea; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; }
+td { padding: 12px 10px; border-bottom: 1px solid #edeef2; font-size: 13px; white-space: nowrap; }
+td:first-child { display: flex; flex-direction: column; gap: 3px; }
+small { color: #6b7280; font-size: 11px; }
+.empty-history { padding: 20px; border-radius: 7px; background: #f3f4f7; }

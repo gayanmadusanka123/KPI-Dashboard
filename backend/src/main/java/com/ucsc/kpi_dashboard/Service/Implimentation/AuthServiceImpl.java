@@ -1,6 +1,7 @@
 package com.ucsc.kpi_dashboard.Service.Implimentation;
 
 import com.ucsc.kpi_dashboard.Configurations.JwtProvider;
+import com.ucsc.kpi_dashboard.Domain.ActiveStatus;
 import com.ucsc.kpi_dashboard.Domain.UserRole;
 import com.ucsc.kpi_dashboard.Exeptions.UserException;
 import com.ucsc.kpi_dashboard.Mapper.UserMapper;
@@ -55,6 +56,7 @@ public class AuthServiceImpl implements AuthService {
         newUser.setEmail(userDto.getEmail());
         newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
         newUser.setRole(userDto.getRole());
+        newUser.setStatus(ActiveStatus.ACTIVE);
 
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setUpdatedAt(LocalDateTime.now());
@@ -62,7 +64,12 @@ public class AuthServiceImpl implements AuthService {
 
         User savedUser = userRepository.save(newUser);
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword());
+        UserDetails userDetails = customUserImplementation.loadUserByUsername(savedUser.getEmail());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                userDto.getPassword(),
+                userDetails.getAuthorities()
+        );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
