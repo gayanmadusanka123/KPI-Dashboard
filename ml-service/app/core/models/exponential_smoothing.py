@@ -20,7 +20,7 @@ def forecast_exponential_smoothing(
     if seasonal is not None:
         if seasonal_periods is None:
             raise ValueError(
-                "seasonal_periods must be provided "
+                "seasonal_periods must be provided "      
                 "when seasonality is enabled."
             )
 
