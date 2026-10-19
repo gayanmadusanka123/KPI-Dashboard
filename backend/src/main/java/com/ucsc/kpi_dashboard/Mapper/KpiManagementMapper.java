@@ -3,7 +3,7 @@ package com.ucsc.kpi_dashboard.Mapper;
 import com.ucsc.kpi_dashboard.Model.Kpi;
 import com.ucsc.kpi_dashboard.Payload.Dto.KpiDto;
 
-public class KpiMapper {
+public class KpiManagementMapper {
 
     public static KpiDto toDto(Kpi kpi) {
 

@@ -6,7 +6,7 @@ import com.ucsc.kpi_dashboard.Payload.Dto.KpiRequestDto;
 import java.util.List;
 import java.util.UUID;
 
-public interface KPIService {
+public interface KPIManagementService {
 
     KpiDto createKpi(KpiRequestDto requestDto);
 

@@ -1,6 +1,6 @@
 package com.ucsc.kpi_dashboard.Service.Implimentation;
 
-import com.ucsc.kpi_dashboard.Mapper.KpiMapper;
+import com.ucsc.kpi_dashboard.Mapper.KpiManagementMapper;
 import com.ucsc.kpi_dashboard.Domain.ActiveStatus;
 import com.ucsc.kpi_dashboard.Model.Department;
 import com.ucsc.kpi_dashboard.Model.Kpi;
@@ -12,7 +12,7 @@ import com.ucsc.kpi_dashboard.Repository.DepartmentRepository;
 import com.ucsc.kpi_dashboard.Repository.KpiCategoryRepository;
 import com.ucsc.kpi_dashboard.Repository.KpiRepository;
 import com.ucsc.kpi_dashboard.Repository.UserRepository;
-import com.ucsc.kpi_dashboard.Service.KPIService;
+import com.ucsc.kpi_dashboard.Service.KPIManagementService;
 import com.ucsc.kpi_dashboard.Exeptions.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ import java.util.UUID;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class KPIServiceImpl implements KPIService {
+public class KPIManagementServiceImpl implements KPIManagementService {
 
     private final KpiRepository kpiRepository;
     private final KpiCategoryRepository kpiCategoryRepository;
@@ -54,7 +54,7 @@ public class KPIServiceImpl implements KPIService {
 
         Kpi savedKpi = kpiRepository.save(kpi);
 
-        return KpiMapper.toDto(savedKpi);
+        return KpiManagementMapper.toDto(savedKpi);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class KPIServiceImpl implements KPIService {
 
         return kpiRepository.findByStatusNot(ActiveStatus.ARCHIVED)
                 .stream()
-                .map(KpiMapper::toDto)
+                .map(KpiManagementMapper::toDto)
                 .toList();
     }
 
@@ -76,7 +76,7 @@ public class KPIServiceImpl implements KPIService {
                         "KPI not found with id: " + id
                 ));
 
-        return KpiMapper.toDto(kpi);
+        return KpiManagementMapper.toDto(kpi);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class KPIServiceImpl implements KPIService {
 
         Kpi updatedKpi = kpiRepository.save(kpi);
 
-        return KpiMapper.toDto(updatedKpi);
+        return KpiManagementMapper.toDto(updatedKpi);
     }
 
     @Override

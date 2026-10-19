@@ -2,7 +2,7 @@ package com.ucsc.kpi_dashboard.Controller;
 
 import com.ucsc.kpi_dashboard.Payload.Dto.KpiDto;
 import com.ucsc.kpi_dashboard.Payload.Dto.KpiRequestDto;
-import com.ucsc.kpi_dashboard.Service.KPIService;
+import com.ucsc.kpi_dashboard.Service.KPIManagementService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +15,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/kpis")
 @RequiredArgsConstructor
-public class KpiController {
+public class KpiManagementController {
 
-    private final KPIService kpiService;
+    private final KPIManagementService kpiService;
 
     // Create a KPI
     @PostMapping
