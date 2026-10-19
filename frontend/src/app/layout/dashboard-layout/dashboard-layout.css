@@ -17,16 +17,16 @@ main {
 
     flex: 1;
     margin-top: 72px;
-    background: #f5f7fb;
+    background: #0f172a;
     overflow: auto;
 
 }
 
 .content-area {
 
-    padding: 24px 32px;
     box-sizing: border-box;
     width: 100%;
+    min-height: 100%;
 
 }
 

@@ -1,6 +1,7 @@
 package com.ucsc.kpi_dashboard.Model;
 
 import com.ucsc.kpi_dashboard.Domain.UserRole;
+import com.ucsc.kpi_dashboard.Domain.ActiveStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -38,6 +39,14 @@ public class User {
 
     @Column(nullable = false)
     private UserRole role;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ActiveStatus status = ActiveStatus.ACTIVE;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

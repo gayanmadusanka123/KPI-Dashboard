@@ -1,3 +1,10 @@
+.page{
+    padding: 24px 32px;
+    min-height: 100%;
+    background: #0f172a;
+    color: #f8fafc;
+}
+
 .page-header{
 
     display:flex;
@@ -24,7 +31,7 @@
 
     margin-top:6px;
 
-    color:#64748b;
+    color:#cbd5e1;
 
 }
 
@@ -54,4 +61,39 @@
 
     background:#1d4ed8;
 
+}
+
+.state-message {
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    padding: 32px;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    color: #cbd5e1;
+    text-align: center;
+}
+
+.state-message strong {
+    color: #f8fafc;
+    font-size: 18px;
+}
+
+.state-error {
+    border-color: #7f1d1d;
+}
+
+@media (max-width: 768px) {
+    .page {
+        padding: 20px 16px;
+    }
+
+    .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+    }
 }

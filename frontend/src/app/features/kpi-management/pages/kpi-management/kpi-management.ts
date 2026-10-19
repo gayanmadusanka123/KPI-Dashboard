@@ -1,134 +1,155 @@
-import { Component } from '@angular/core';
-import { MatDialog} from '@angular/material/dialog';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { AddKpiDialog } from '../../components/add-kpi-dialog/add-kpi-dialog';
 import { CommonModule } from '@angular/common';
-import { KpiTable,Kpi } from '../../components/kpi-table/kpi-table';
+import { KpiTable } from '../../components/kpi-table/kpi-table';
+import { Kpi } from '../../models/kpi.models';
+import { KpiFacade } from '../../state/kpi.facade';
+import { mapKpiFormToRequest } from '../../data-access/mappers/kpi.mapper';
 
 
 @Component({
   selector: 'app-kpi-management',
-  imports: [CommonModule, KpiTable],
+  imports: [CommonModule, KpiTable, MatSnackBarModule],
   templateUrl: './kpi-management.html',
   styleUrl: './kpi-management.css',
 })
-export class KpiManagement {
-  constructor(private dialog: MatDialog) {}
+export class KpiManagement implements OnInit {
+  constructor(
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private router: Router,
+    private facade: KpiFacade,
+    private readonly changeDetector: ChangeDetectorRef
+  ) {}
+
+  kpis: Kpi[] = [];
+  loading = false;
+  error: string | null = null;
+  private readonly subscriptions = new Subscription();
+
+  ngOnInit(): void {
+    this.subscriptions.add(this.facade.kpis$.subscribe(kpis => {
+      this.kpis = kpis;
+      this.changeDetector.detectChanges();
+    }));
+    this.subscriptions.add(this.facade.loading$.subscribe(loading => {
+      this.loading = loading;
+      this.changeDetector.detectChanges();
+    }));
+    this.subscriptions.add(this.facade.error$.subscribe(error => {
+      this.error = error;
+      this.changeDetector.detectChanges();
+    }));
+    this.facade.loadKpis();
+  }
 
   openAddKpiDialog(): void {
-    this.dialog.open(AddKpiDialog, {
-      width: '800px',
-      disableClose: true
+    const dialogRef = this.dialog.open(AddKpiDialog, {
+      width: '900px',
+      maxWidth: '95vw',
+      disableClose: true,
+      panelClass: 'kpi-dialog-panel'
+    });
+
+    dialogRef.afterClosed().subscribe((result: {
+      type: string;
+      kpiData: Record<string, string>;
+    } | undefined) => {
+      if (!result || result.type !== 'create' || !result.kpiData) return;
+
+      const data = result.kpiData;
+      const request = mapKpiFormToRequest({
+        name: data['kpiName'] ?? '',
+        categoryId: data['categoryId'] || null,
+        departmentId: data['departmentId'] || null,
+        ownerId: data['ownerId'] || null,
+        description: data['description'] ?? '',
+        dataSource: data['dataSource'] ?? '',
+        measurementUnit: data['measurementUnit'] ?? '',
+        reportingFrequency: data['reportingFrequency'] ?? '',
+        directionOfGood: data['directionOfGood'] === 'Lower is Better'
+          ? 'Lower is Better'
+          : 'Higher is Better',
+        status: data['status'] === 'INACTIVE' ? 'INACTIVE' : 'ACTIVE',
+        notes: data['notes'] ?? ''
+      });
+
+      this.facade.createKpi(request).subscribe({
+        next: kpi => {
+          this.snackBar.open(`KPI "${kpi.name}" created successfully.`, 'Dismiss', {
+            duration: 3000,
+            panelClass: ['success-snackbar']
+          });
+          void this.router.navigate(['/kpi-management', kpi.id]);
+        }
+      });
     });
   }
 
-  kpis: Kpi[] = [
+  openEditKpiDialog(kpi: Kpi): void {
+    const dialogRef = this.dialog.open(AddKpiDialog, {
+      width: '900px',
+      maxWidth: '95vw',
+      disableClose: true,
+      panelClass: 'kpi-dialog-panel',
+      data: { mode: 'edit', kpi }
+    });
 
-    {
-      id: 'KPI-0031',
-      name: 'Monthly Revenue',
-      category: 'Financial',
-      dept: 'Sales',
-      owner: 'A. Fernando',
-      frequency: 'Monthly',
-      target: '$118,000',
-      actual: '$122,900',
-      score: 104.2,
-      status: 'On Track',
-      trend: 'up',
-      updated: '2 days ago'
-    },
+    dialogRef.afterClosed().subscribe((result: {
+      type: string;
+      kpiData: Record<string, string>;
+    } | undefined) => {
+      if (!result || result.type !== 'edit' || !result.kpiData) return;
+      this.facade.updateKpi(kpi.id, this.toKpiRequest(result.kpiData)).subscribe({
+        next: updated => this.snackBar.open(`KPI "${updated.name}" updated successfully.`, 'Dismiss', {
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        })
+      });
+    });
+  }
 
-    {
-      id: 'KPI-0018',
-      name: 'CSAT Score',
-      category: 'Customer',
-      dept: 'CX',
-      owner: 'D. Perera',
-      frequency: 'Monthly',
-      target: '4.50',
-      actual: '4.61',
-      score: 102.4,
-      status: 'Exceeded',
-      trend: 'up',
-      updated: '1 day ago'
-    },
+  private toKpiRequest(data: Record<string, string>) {
+    return mapKpiFormToRequest({
+      name: data['kpiName'] ?? '',
+      categoryId: data['categoryId'] || null,
+      departmentId: data['departmentId'] || null,
+      ownerId: data['ownerId'] || null,
+      description: data['description'] ?? '',
+      dataSource: data['dataSource'] ?? '',
+      measurementUnit: data['measurementUnit'] ?? '',
+      reportingFrequency: data['reportingFrequency'] ?? '',
+      directionOfGood: data['directionOfGood'] === 'Lower is Better' ? 'Lower is Better' : 'Higher is Better',
+      status: data['status'] === 'INACTIVE' ? 'INACTIVE' : 'ACTIVE',
+      notes: data['notes'] ?? ''
+    });
+  }
 
-    {
-      id: 'KPI-0007',
-      name: 'Headcount',
-      category: 'People',
-      dept: 'People Ops',
-      owner: 'S. Jayasuriya',
-      frequency: 'Monthly',
-      target: '86',
-      actual: '84',
-      score: 97.7,
-      status: 'On Track',
-      trend: 'flat',
-      updated: '5 days ago'
-    },
+  openKpiDetails(kpi: Kpi): void {
+    this.router.navigate(['/kpi-management', kpi.id]);
+  }
 
-    {
-      id: 'KPI-0052',
-      name: 'Defect Rate',
-      category: 'Operations',
-      dept: 'Manufacturing',
-      owner: 'R. Silva',
-      frequency: 'Weekly',
-      target: '1.20%',
-      actual: '1.68%',
-      score: 71.4,
-      status: 'At Risk',
-      trend: 'down',
-      updated: '12 hrs ago'
-    },
+  reload(): void {
+    this.facade.loadKpis();
+  }
 
-    {
-      id: 'KPI-0044',
-      name: 'Sales Conversion',
-      category: 'Growth',
-      dept: 'Sales',
-      owner: 'A. Fernando',
-      frequency: 'Monthly',
-      target: '22.0%',
-      actual: '19.3%',
-      score: 87.7,
-      status: 'At Risk',
-      trend: 'down',
-      updated: '2 days ago'
-    },
+  deleteKpi(kpi: Kpi): void {
+    if (!window.confirm(`Delete KPI "${kpi.name}"?`)) return;
 
-    {
-      id: 'KPI-0009',
-      name: 'Operational Cost',
-      category: 'Financial',
-      dept: 'Manufacturing',
-      owner: 'R. Silva',
-      frequency: 'Monthly',
-      target: '$64,000',
-      actual: '$71,200',
-      score: 88.9,
-      status: 'Off Track',
-      trend: 'down',
-      updated: '3 days ago'
-    },
+    this.facade.deleteKpi(kpi.id).subscribe({
+      next: () => this.snackBar.open('KPI deleted successfully.', 'Dismiss', {
+        duration: 3000,
+        panelClass: ['success-snackbar']
+      })
+    });
+  }
 
-    {
-      id: 'KPI-0026',
-      name: 'Sales Conversion',
-      category: 'Growth',
-      dept: 'Sales',
-      owner: 'A. Fernando',
-      frequency: 'Monthly',
-      target: '22.0%',
-      actual: '19.3%',
-      score: 87.7,
-      status: 'At Risk',
-      trend: 'down',
-      updated: '2 days ago'
-    },
-
-  ];
-
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
 }

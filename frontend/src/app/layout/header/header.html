@@ -20,9 +20,10 @@
             </div>
 
             <div>
-                <p class="name">Admin</p>
-                <span>Administrator</span>
+                <p class="name">{{ auth.currentUser?.userName || 'Account' }}</p>
+                <span>{{ auth.currentUser?.email || 'Workspace user' }}</span>
             </div>
+            <button class="logout-btn" type="button" (click)="logout()">Log out</button>
         </div>
 
     </div>

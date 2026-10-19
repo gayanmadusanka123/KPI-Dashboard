@@ -1,1 +1,32 @@
-<p>analytics works!</p>
+<div class="analytics-page px-6 py-6 space-y-6 mx-auto">
+  [style.backgroundColor]="C.bg"
+    <app-analytics-section-header
+    title="Analytics"
+    subtitle="Deep-dive into revenue, performance, and growth data">
+    <div class="flex gap-2">
+      <select class="analytics-select px-3 py-2 rounded-xl text-sm border outline-none cursor-pointer"
+        [style.backgroundColor]="C.card" [style.borderColor]="C.border" [style.color]="C.sub">
+        <option>FY 2024</option>
+        <option>FY 2023</option>
+        <option>FY 2022</option>
+      </select>
+      <button type="button"
+        class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm border cursor-pointer"
+        [style.borderColor]="C.border" [style.color]="C.sub" [style.backgroundColor]="C.card">
+        <app-icon name="Download" [size]="13" [color]="C.sub" />
+        Export
+      </button>
+    </div>
+  </app-analytics-section-header>
+
+  <app-analytics-tabs [active]="tab()" (activeChange)="setTab($event)" />
+
+  @switch (tab()) {
+    @case ('revenue') { <app-analytics-revenue-tab /> }
+    @case ('performance') { <app-analytics-performance-tab /> }
+    @case ('trends') { <app-analytics-trends-tab /> }
+    @case ('distribution') { <app-analytics-distribution-tab /> }
+  }
+
+  <div class="h-6"></div>
+</div>

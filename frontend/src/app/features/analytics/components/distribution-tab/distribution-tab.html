@@ -1,0 +1,37 @@
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+  <div class="rounded-2xl border p-6" [style.backgroundColor]="C.card" [style.borderColor]="C.border">
+    <p class="font-semibold mb-1" [style.color]="C.text">Expense Distribution</p>
+    <p class="text-xs mb-4" [style.color]="C.sub">FY 2024 cost breakdown</p>
+    <app-pie-chart [data]="expenseData" valueKey="value" nameKey="name" [colors]="PIE_COLORS"
+      [height]="200" [innerRadius]="55" [outerRadius]="85" [paddingAngle]="3" />
+    <div class="mt-4 space-y-2">
+      @for (item of expenseData; track item.name; let i = $index) {
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full" [style.backgroundColor]="PIE_COLORS[i % PIE_COLORS.length]"></span>
+            <span [style.color]="C.sub">{{ item.name }}</span>
+          </div>
+          <span class="font-semibold tabular-nums" [style.color]="C.text">{{ item.value }}%</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="rounded-2xl border p-6" [style.backgroundColor]="C.card" [style.borderColor]="C.border">
+    <p class="font-semibold mb-1" [style.color]="C.text">Revenue by Channel</p>
+    <p class="text-xs mb-4" [style.color]="C.sub">FY 2024 channel split</p>
+    <app-pie-chart [data]="channelData" valueKey="revenue" nameKey="channel" [colors]="PIE_COLORS"
+      [height]="200" [outerRadius]="85" [paddingAngle]="3" />
+    <div class="mt-4 space-y-2">
+      @for (item of channelData; track item.channel; let i = $index) {
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full" [style.backgroundColor]="PIE_COLORS[i % PIE_COLORS.length]"></span>
+            <span [style.color]="C.sub">{{ item.channel }}</span>
+          </div>
+          <span class="font-semibold tabular-nums" [style.color]="C.text">${{ item.revenue }}M</span>
+        </div>
+      }
+    </div>
+  </div>
+</div>

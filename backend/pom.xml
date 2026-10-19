@@ -50,6 +50,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
+<<<<<<< HEAD
 
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -59,6 +60,12 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
+=======
+<!--        <dependency>-->
+<!--            <groupId>org.flywaydb</groupId>-->
+<!--            <artifactId>flyway-database-postgresql</artifactId>-->
+<!--        </dependency>-->
+>>>>>>> b29cf9baaa899bcc450724ff4d9372626b1d3430
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
