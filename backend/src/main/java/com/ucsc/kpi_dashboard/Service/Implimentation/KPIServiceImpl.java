@@ -12,9 +12,10 @@ import com.ucsc.kpi_dashboard.Repository.DepartmentRepository;
 import com.ucsc.kpi_dashboard.Repository.KpiCategoryRepository;
 import com.ucsc.kpi_dashboard.Repository.KpiRepository;
 import com.ucsc.kpi_dashboard.Repository.UserRepository;
-import com.ucsc.kpi_dashboard.Service.KpiService;
+import com.ucsc.kpi_dashboard.Service.KPIService;
 import com.ucsc.kpi_dashboard.Exeptions.ResourceNotFoundException;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,24 +25,13 @@ import java.util.UUID;
 
 @Service
 @Transactional
-public class KpiServiceImpl implements KpiService {
+@RequiredArgsConstructor
+public class KPIServiceImpl implements KPIService {
 
     private final KpiRepository kpiRepository;
     private final KpiCategoryRepository kpiCategoryRepository;
     private final DepartmentRepository departmentRepository;
     private final UserRepository userRepository;
-
-    public KpiServiceImpl(
-            KpiRepository kpiRepository,
-            KpiCategoryRepository kpiCategoryRepository,
-            DepartmentRepository departmentRepository,
-            UserRepository userRepository
-    ) {
-        this.kpiRepository = kpiRepository;
-        this.kpiCategoryRepository = kpiCategoryRepository;
-        this.departmentRepository = departmentRepository;
-        this.userRepository = userRepository;
-    }
 
     @Override
     public KpiDto createKpi(KpiRequestDto requestDto) {

@@ -2,9 +2,10 @@ package com.ucsc.kpi_dashboard.Controller;
 
 import com.ucsc.kpi_dashboard.Payload.Dto.KpiDto;
 import com.ucsc.kpi_dashboard.Payload.Dto.KpiRequestDto;
-import com.ucsc.kpi_dashboard.Service.KpiService;
+import com.ucsc.kpi_dashboard.Service.KPIService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,13 +14,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/kpis")
+@RequiredArgsConstructor
 public class KpiController {
 
-    private final KpiService kpiService;
-
-    public KpiController(KpiService kpiService) {
-        this.kpiService = kpiService;
-    }
+    private final KPIService kpiService;
 
     // Create a KPI
     @PostMapping
