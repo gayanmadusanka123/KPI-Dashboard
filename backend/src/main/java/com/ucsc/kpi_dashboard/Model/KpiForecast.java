@@ -1,9 +1,11 @@
 package com.ucsc.kpi_dashboard.Model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -20,6 +22,11 @@ import java.util.UUID;
                 )
         }
 )
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class KpiForecast {
     @Id
     @Column(name = "id", nullable = false)
@@ -40,4 +47,15 @@ public class KpiForecast {
 
     @Column(name = "upper_bound", precision = 19, scale = 6)
     private BigDecimal upperBound;
+
+    @Column(name = "model_name", nullable = false, length = 50)
+    private String modelName;
+
+    @Column(
+            name = "generated_at",
+            nullable = false,
+            insertable = false,
+            updatable = false
+    )
+    private LocalDateTime generatedAt;
 }
