@@ -63,4 +63,15 @@ def forecast_all_kpis(df, kpi_columns, periods=3):
                 "No KPIs have enough data for forecasting."
             )
 
+    if not results:
+        return pd.DataFrame(
+            columns=[
+                "date",
+                "forecast",
+                "lower_bound",
+                "upper_bound",
+                "model"
+            ]
+    )
+
     return pd.concat(results, ignore_index=True)

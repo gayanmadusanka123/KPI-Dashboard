@@ -7,6 +7,8 @@ import com.ucsc.kpi_dashboard.Model.KpiActual;
 import com.ucsc.kpi_dashboard.Model.KpiActualHistory;
 import com.ucsc.kpi_dashboard.Model.KpiPeriod;
 import com.ucsc.kpi_dashboard.Payload.Dto.KpiActualDto;
+import com.ucsc.kpi_dashboard.Payload.Dto.KpiActualHistoryDto;
+import com.ucsc.kpi_dashboard.Payload.Dto.KpiActualObservationDto;
 import com.ucsc.kpi_dashboard.Payload.Dto.KpiActualRequestDto;
 import com.ucsc.kpi_dashboard.Repository.KpiActualHistoryRepository;
 import com.ucsc.kpi_dashboard.Repository.KpiActualRepository;
@@ -153,5 +155,15 @@ public class KpiActualServiceImpl implements KpiActualService {
                                 "KPI actual not found"));
 
         kpiActualRepository.delete(actual);
+    }
+
+    @Override
+    public List<KpiActualObservationDto> getActualHistory(UUID kpiId) {
+
+        return kpiActualRepository
+                .findByKpi_IdOrderByPeriod_PeriodStartAsc(kpiId)
+                .stream()
+                .map(KpiActualMapper::toObservationDto)
+                .toList();
     }
 }

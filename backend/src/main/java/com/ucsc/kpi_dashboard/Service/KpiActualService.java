@@ -1,6 +1,9 @@
 package com.ucsc.kpi_dashboard.Service;
 
+import com.ucsc.kpi_dashboard.Model.KpiActualHistory;
 import com.ucsc.kpi_dashboard.Payload.Dto.KpiActualDto;
+import com.ucsc.kpi_dashboard.Payload.Dto.KpiActualHistoryDto;
+import com.ucsc.kpi_dashboard.Payload.Dto.KpiActualObservationDto;
 import com.ucsc.kpi_dashboard.Payload.Dto.KpiActualRequestDto;
 
 import java.util.List;
@@ -20,4 +23,6 @@ public interface KpiActualService {
     );
 
     void deleteActual(UUID id);
+
+    List<KpiActualObservationDto> getActualHistory(UUID kpiId);
 }
