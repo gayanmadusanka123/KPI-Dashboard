@@ -1,0 +1,90 @@
+<header class="widget-heading">
+        <h3>Top & Bottom Performers</h3>
+        <p>Highest and lowest performing KPIs</p>
+</header>
+
+<div class="performers-grid">
+
+
+  <section class="performer-column">
+    <div class="column-heading top-heading">
+      <span class="heading-dot"></span>
+      <span>Top Performers</span>
+    </div>
+
+    @for (kpi of top5; track kpi.id; let i = $index) {
+      <div class="performer-row top-row">
+        <span
+          class="rank-badge"
+          [style.background-color]="styles.top.rankBg"
+          [style.color]="styles.top.rankColor"
+        >
+          {{ i + 1 }}
+        </span>
+
+        <div class="performer-details">
+          <div class="performer-name" [title]="kpi.name">
+            {{ kpi.name }}
+          </div>
+          <div class="performer-owner">{{ kpi.owner }}</div>
+        </div>
+
+        <div class="performer-metric">
+          <span
+            class="trend-arrow"
+            [style.color]="getTrendColor(kpi.trend)"
+            [attr.aria-label]="kpi.trend"
+            [title]="kpi.trend"
+          >
+            {{ getTrendSymbol(kpi.trend) }}
+          </span>
+
+          <span class="performer-score" [style.color]="styles.top.score">
+            {{ kpi.performanceScore }}
+          </span>
+        </div>
+      </div>
+    }
+  </section>
+
+  <section class="performer-column">
+    <div class="column-heading bottom-heading">
+      <span class="heading-dot"></span>
+      <span>Bottom Performers</span>
+    </div>
+
+    @for (kpi of bottom5; track kpi.id; let i = $index) {
+      <div class="performer-row bottom-row">
+        <span
+          class="rank-badge"
+          [style.background-color]="styles.bottom.rankBg"
+          [style.color]="styles.bottom.rankColor"
+        >
+          {{ i + 1 }}
+        </span>
+
+        <div class="performer-details">
+          <div class="performer-name" [title]="kpi.name">
+            {{ kpi.name }}
+          </div>
+          <div class="performer-owner">{{ kpi.owner }}</div>
+        </div>
+
+        <div class="performer-metric">
+          <span
+            class="trend-arrow"
+            [style.color]="getTrendColor(kpi.trend)"
+            [attr.aria-label]="kpi.trend"
+            [title]="kpi.trend"
+          >
+            {{ getTrendSymbol(kpi.trend) }}
+          </span>
+
+          <span class="performer-score" [style.color]="styles.bottom.score">
+            {{ kpi.performanceScore }}
+          </span>
+        </div>
+      </div>
+    }
+  </section>
+</div>

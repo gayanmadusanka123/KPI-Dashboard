@@ -1,0 +1,77 @@
+<div class="insights-widget">
+  <div class="insights-header">
+    <header class="widget-heading">
+        <h3>AI Insight Feed</h3>
+        <p>Insights and recommendations</p>
+    </header>
+    
+    <span class="new-count">
+      {{ visibleInsights().length }} new
+    </span>
+  </div>
+
+  <div class="insights-list">
+    @for (insight of visibleInsights(); track insight.id) {
+      <article
+        class="insight-card"
+        [class.actioned]="insight.actioned"
+      >
+        <div class="insight-layout">
+          <div
+            class="insight-icon"
+            [style.background-color]="typeConfig[insight.type].bg"
+            [style.color]="typeConfig[insight.type].color"
+            aria-hidden="true"
+          >
+            {{ typeConfig[insight.type].icon }}
+          </div>
+
+          <div class="insight-content">
+            <div class="insight-meta">
+              <span
+                class="type-badge"
+                [style.background-color]="typeConfig[insight.type].bg"
+                [style.color]="typeConfig[insight.type].color"
+              >
+                {{ insight.type }}
+              </span>
+
+              <span class="kpi-name" [title]="insight.kpiName">
+                {{ insight.kpiName }}
+              </span>
+
+              <span class="created-at">
+                {{ insight.createdAt }}
+              </span>
+            </div>
+
+            <p class="insight-text">
+              {{ insight.text }}
+            </p>
+
+            <div class="insight-footer">
+              <span class="relevance">
+                Relevance
+                {{ getRelevancePercentage(insight.relevanceScore) }}%
+              </span>
+
+              <button
+                type="button"
+                class="dismiss-button"
+                (click)="dismissInsight(insight.id)"
+                [attr.aria-label]="'Dismiss insight for ' + insight.kpiName"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+    } @empty {
+      <div class="empty-state">
+        <div class="empty-check" aria-hidden="true">✓</div>
+        <p>All insights actioned</p>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,129 @@
+<section class="scorecard">
+  <header class="scorecard-header">
+    <div class="scorecard-heading">
+      <h3>KPI Performance Scorecard</h3>
+      <p>
+        {{ filteredKpis().length }} KPIs — click a tile to drill down
+      </p>
+    </div>
+
+    <div class="filter-buttons">
+      @for (button of filterButtons; track button.value) {
+        <button
+          type="button"
+          class="filter-button"
+          [class.active]="selectedFilter() === button.value"
+          [style.background-color]="
+            selectedFilter() === button.value
+              ? button.color
+              : '#F1F5F9'
+          "
+          [style.color]="
+            selectedFilter() === button.value
+              ? '#FFFFFF'
+              : '#64748B'
+          "
+          (click)="setFilter(button.value)"
+        >
+          {{ button.label }}
+        </button>
+      }
+    </div>
+  </header>
+
+  <div class="kpi-grid">
+    @for (kpi of filteredKpis(); track kpi.id) {
+      <article
+        class="kpi-card"
+        tabindex="0"
+        role="button"
+        [attr.aria-label]="'View details for ' + kpi.name"
+        [style.border-color]="statusBorderColor[kpi.status] + '30'"
+        (click)="openKpi(kpi)"
+        (keydown.enter)="openKpi(kpi)"
+        (keydown.space)="$event.preventDefault(); openKpi(kpi)"
+      >
+        <div
+          class="kpi-card-accent"
+          [style.background-color]="statusBorderColor[kpi.status]"
+        ></div>
+
+        <div
+          class="kpi-card-content"
+          [style.background-color]="statusTopColor[kpi.status] + '50'"
+        >
+          <div class="kpi-card-heading">
+            <div class="kpi-identity">
+              <div class="kpi-id">{{ kpi.id }}</div>
+              <h4 class="kpi-name">{{ kpi.name }}</h4>
+            </div>
+
+            <span
+              class="trend-indicator"
+              [style.color]="getTrendColor(kpi.trend)"
+              [attr.aria-label]="'Trend: ' + kpi.trend"
+              [title]="kpi.trend"
+            >
+              {{ getTrendSymbol(kpi.trend) }}
+            </span>
+          </div>
+
+          <div class="kpi-score">
+            <span
+              class="score-value"
+              [style.color]="statusBorderColor[kpi.status]"
+            >
+              {{ kpi.performanceScore }}
+            </span>
+            <span class="score-label">score</span>
+          </div>
+
+          <div class="kpi-meta">
+            <span
+              class="status-badge"
+              [style.background-color]="statusTopColor[kpi.status]"
+              [style.color]="statusBorderColor[kpi.status]"
+            >
+              @switch (kpi.status) {
+                @case ('exceeded') {
+                  Exceeded
+                }
+                @case ('on-track') {
+                  On Track
+                }
+                @case ('at-risk') {
+                  At Risk
+                }
+                @case ('off-track') {
+                  Off Track
+                }
+              }
+            </span>
+
+            <span class="kpi-department">{{ kpi.department }}</span>
+          </div>
+
+          <div class="kpi-values">
+            <div class="kpi-value-item">
+              <span class="value-label">Actual</span>
+              <span class="value-number">
+                {{ kpi.currentActual }}{{ kpi.unit }}
+              </span>
+            </div>
+
+            <div class="kpi-value-item target-value">
+              <span class="value-label">Target</span>
+              <span class="value-number">
+                {{ kpi.currentTarget }}{{ kpi.unit }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </article>
+    } @empty {
+      <div class="empty-state">
+        <p>No KPIs found for this status.</p>
+      </div>
+    }
+  </div>
+</section>

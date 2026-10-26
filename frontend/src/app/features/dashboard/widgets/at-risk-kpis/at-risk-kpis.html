@@ -1,0 +1,52 @@
+<div class="risk-list">
+    <header class="widget-heading">
+        <h3>At-Risk KPI Predictor</h3>
+        <p>KPIs that may miss their targets</p>
+    </header>
+
+
+  @for (kpi of riskItems; track kpi.id) {
+    <div class="risk-item">
+      <div
+        class="risk-icon"
+        [style.background-color]="getUrgencyConfig(kpi.urgency).bg"
+        aria-hidden="true"
+      >
+        <span class="warning-symbol">!</span>
+      </div>
+
+      <div class="risk-info">
+        <div class="risk-name" [title]="kpi.name">
+          {{ kpi.name }}
+        </div>
+
+        <div class="risk-description">
+          In {{ kpi.periods }} period{{ kpi.periods > 1 ? 's' : '' }}
+          <span class="separator">·</span>
+          <span class="probability">
+            {{ formatProbability(kpi.probability) }}%
+          </span>
+          probability
+        </div>
+      </div>
+
+      <div class="risk-status">
+        <div class="shortfall">
+          -{{ kpi.shortfallPct }}%
+        </div>
+
+        <span
+          class="urgency-badge"
+          [style.background-color]="getUrgencyConfig(kpi.urgency).bg"
+          [style.color]="getUrgencyConfig(kpi.urgency).color"
+        >
+          {{ kpi.urgency }}
+        </span>
+      </div>
+    </div>
+  } @empty {
+    <div class="empty-state">
+      No at-risk KPIs available.
+    </div>
+  }
+</div>

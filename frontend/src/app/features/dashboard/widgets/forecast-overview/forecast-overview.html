@@ -1,0 +1,87 @@
+<div class="forecast-widget">
+    <header class="forecast-header">
+        <header class="widget-heading">
+            <h3>Forecast Overview</h3>
+            <p>Projected KPI performance</p>
+        </header>
+
+        <div class="forecast-toolbar">
+            <label for="forecast-sort">Sort by</label>
+
+            <select
+                id="forecast-sort"
+                [value]="sortBy"
+                (change)="setSortBy($any($event.target).value)"
+                >
+                <option value="change">Change %</option>
+                <option value="confidence">Confidence</option>
+            </select>
+        </div>
+    </header>
+    
+  <div class="forecast-table-wrapper">
+    <table class="forecast-table">
+      <thead>
+        <tr>
+          <th class="kpi-column">KPI</th>
+          <th class="numeric-column">Current</th>
+          <th class="numeric-column">Forecast</th>
+          <th class="numeric-column">Δ%</th>
+          <th class="confidence-column">Conf.</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (row of sortedForecasts; track row.kpiId) {
+          <tr>
+            <td class="kpi-cell">
+              <div class="kpi-name">
+                {{ row.kpiName }}
+              </div>
+              <div class="model-tier">
+                {{ row.modelTier }}
+              </div>
+            </td>
+
+            <td class="numeric-cell">
+              {{ row.currentValue }}{{ row.unit }}
+            </td>
+
+            <td class="numeric-cell forecast-value">
+              {{ row.nextPeriodForecast }}{{ row.unit }}
+            </td>
+
+            <td class="numeric-cell">
+              <span
+                class="change-value"
+                [style.color]="
+                  row.forecastChangePct >= 0
+                    ? '#16A34A'
+                    : '#DC2626'
+                "
+              >
+                {{ row.forecastChangePct >= 0 ? '+' : '' }}{{ row.forecastChangePct }}%
+              </span>
+            </td>
+
+            <td class="confidence-cell">
+              <span
+                class="confidence-badge"
+                [style.background-color]="confidenceConfig[row.confidence].bg"
+                [style.color]="confidenceConfig[row.confidence].color"
+              >
+                {{ row.confidence }}
+              </span>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="empty-state">
+              No forecast data available.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

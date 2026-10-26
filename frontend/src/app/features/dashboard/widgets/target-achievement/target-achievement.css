@@ -1,0 +1,158 @@
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  color: #0f172a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.target-achievement {
+  width: 100%;
+  min-width: 0;
+}
+
+.widget-heading {
+  min-width: 0;
+}
+
+.widget-heading h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.widget-heading p {
+  margin: 5px 0 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.achievement-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.achievement-value-section {
+  min-width: 0;
+}
+
+.achievement-value {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #0f172a;
+}
+
+.achievement-value span {
+  margin-left: 2px;
+  color: #94a3b8;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 24px;
+}
+
+.achievement-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.achievement-delta.positive {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.achievement-delta.negative {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.achievement-description {
+  margin: 12px 0 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.progress-ring {
+  position: relative;
+  display: flex;
+  flex: 0 0 72px;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+}
+
+.progress-ring svg {
+  display: block;
+}
+
+.progress-ring-label {
+  position: absolute;
+  color: #2563eb;
+  font-family: "DM Mono", Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.status-card {
+  min-width: 0;
+  padding: 8px 4px;
+  border-radius: 8px;
+  background: #f8fafc;
+  text-align: center;
+}
+
+.status-count {
+  font-family: "DM Mono", Consolas, monospace;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.status-label {
+  margin-top: 2px;
+  color: #94a3b8;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 340px) {
+  .achievement-value {
+    font-size: 42px;
+  }
+
+  .achievement-main {
+    gap: 6px;
+  }
+
+  .status-summary {
+    gap: 4px;
+  }
+
+  .status-label {
+    font-size: 10px;
+  }
+}

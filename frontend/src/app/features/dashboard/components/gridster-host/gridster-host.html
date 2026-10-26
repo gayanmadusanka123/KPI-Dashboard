@@ -1,0 +1,84 @@
+<div class="grid-toolbar">
+  <div>
+    <h2>Performance Overview</h2>
+    <p>Your key performance indicators at a glance.</p>
+  </div>
+
+  <div class="toolbar-actions">
+    @if (!isEditing) {
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="resetLayout()">
+        Reset
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="startEditing()">
+        Edit Layout
+      </button>
+    } @else {
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="cancelEditing()">
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="saveLayout()">
+        Save Layout
+      </button>
+    }
+  </div>
+</div>
+
+@if (isEditing) {
+  <p class="edit-notice">
+    Drag widgets to reposition them. Use the resize handles to change
+    their dimensions, then save your layout.
+  </p>
+}
+
+<gridster [options]="options">
+  @for (widget of widgets; track widget.id) {
+    <gridster-item [item]="widget">
+      <app-widget-container
+        [title]="widget.title"
+        [description]="widget.description"
+        [editing]="isEditing">
+
+        @switch (widget.id) {
+          @case ('kpi-scorecard') {
+            <app-kpi-scorecard />
+          }
+          @case ('performance-distribution') {
+            <app-performance-donut />
+          }
+          @case ('target-achievement') {
+            <app-target-achievement />
+          }
+          @case ('top-bottom-performers') {
+            <app-top-bottom-performers />
+          }
+          @case ('forecast-overview') {
+            <app-forecast-overview />
+          }
+          @case ('at-risk-kpis') {
+             <app-at-risk-kpis />
+          }
+          @case ('ai-insights') {
+            <app-ai-insights />
+          }
+          @case ('data-freshness') {
+            <app-data-freshness />
+          }
+        }
+      </app-widget-container>
+    </gridster-item>
+  }
+</gridster>

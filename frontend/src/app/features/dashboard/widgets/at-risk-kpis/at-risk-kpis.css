@@ -1,0 +1,168 @@
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  color: #0f172a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.widget-heading {
+  min-width: 0;
+}
+
+.widget-heading h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.widget-heading p {
+  margin: 5px 0 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.risk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.risk-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #f1f5f9;
+  border-radius: 9px;
+  background-color: #f8fafc;
+  transition: background-color 0.15s ease;
+}
+
+.risk-item:hover {
+  background-color: #f1f5f9;
+}
+
+.risk-icon {
+  display: flex;
+  flex: 0 0 36px;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+}
+
+.warning-symbol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.risk-info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.risk-name {
+  overflow: hidden;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.risk-description {
+  margin-top: 3px;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.separator {
+  padding: 0 3px;
+  color: #94a3b8;
+}
+
+.probability {
+  color: #64748b;
+  font-family: "DM Mono", monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.risk-status {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  text-align: right;
+}
+
+.shortfall {
+  color: #dc2626;
+  font-family: "DM Mono", monospace;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.urgency-badge {
+  display: inline-block;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.empty-state {
+  padding: 24px 12px;
+  color: #94a3b8;
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 360px) {
+  .risk-item {
+    gap: 8px;
+    padding: 9px;
+  }
+
+  .risk-icon {
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .risk-name {
+    font-size: 12px;
+  }
+
+  .risk-description {
+    font-size: 10px;
+  }
+}

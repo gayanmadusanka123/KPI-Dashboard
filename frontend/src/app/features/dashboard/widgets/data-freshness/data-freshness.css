@@ -1,0 +1,141 @@
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  color: #0f172a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.freshness-widget {
+  width: 100%;
+  min-width: 0;
+}
+
+.widget-heading {
+  min-width: 0;
+}
+
+.widget-heading h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.widget-heading p {
+  margin: 5px 0 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+.freshness-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.freshness-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid;
+  border-radius: 8px;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.freshness-card:hover {
+  opacity: 0.8;
+}
+
+.freshness-card:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.freshness-dot {
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 50%;
+}
+
+.freshness-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.kpi-name {
+  overflow: hidden;
+  margin: 0;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.freshness-label {
+  margin: 2px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.last-updated {
+  margin: 3px 0 0;
+  color: #94a3b8;
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.freshness-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-label {
+  color: #64748b;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+@media (max-width: 380px) {
+  .freshness-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
