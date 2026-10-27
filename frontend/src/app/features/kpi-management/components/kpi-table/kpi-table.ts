@@ -1,27 +1,13 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { Kpi } from '../../models/kpi.models';
 
-
-
-export interface Kpi {
-  id: string;
-  name: string;
-  category: string;
-  dept: string;
-  owner: string;
-  frequency: string;
-  target: string;
-  actual: string;
-  score: number;
-  status: 'Exceeded' | 'On Track' | 'At Risk' | 'Off Track';
-  trend: 'up' | 'down' | 'flat';
-  updated: string;
-}
+export type { Kpi } from '../../models/kpi.models';
 
 @Component({
   selector: 'app-kpi-table',
@@ -35,6 +21,9 @@ export interface Kpi {
 export class KpiTable implements OnChanges {
 
   @Input() kpis: Kpi[] = [];
+  @Output() viewDetails = new EventEmitter<Kpi>();
+  @Output() delete = new EventEmitter<Kpi>();
+  @Output() edit = new EventEmitter<Kpi>();
 
   filteredKpis: Kpi[] = [];
 
@@ -45,6 +34,24 @@ export class KpiTable implements OnChanges {
   selectedStatus = '';
   selectedKpi: Kpi | null = null;
   viewMode: 'table' | 'cards' = 'table';
+
+  get onTrackCount(): number {
+    return this.kpis.filter(kpi => kpi.status === 'On Track').length;
+  }
+
+  get atRiskCount(): number {
+    return this.kpis.filter(kpi => kpi.status === 'At Risk').length;
+  }
+
+  get offTrackCount(): number {
+    return this.kpis.filter(kpi => kpi.status === 'Off Track').length;
+  }
+
+  get averageScore(): number {
+    const scored = this.kpis.filter(kpi => Number.isFinite(kpi.score) && kpi.score > 0);
+    if (scored.length === 0) return 0;
+    return Number((scored.reduce((sum, kpi) => sum + kpi.score, 0) / scored.length).toFixed(1));
+  }
 
 
   sortColumn = '';
@@ -120,15 +127,15 @@ export class KpiTable implements OnChanges {
   // }
 
   viewKpi(kpi: Kpi): void {
-    console.log('View', kpi);
+    this.viewDetails.emit(kpi);
   }
 
   editKpi(kpi: Kpi): void {
-    console.log('Edit', kpi);
+    this.edit.emit(kpi);
   }
 
   deleteKpi(kpi: Kpi): void {
-    console.log('Delete', kpi);
+    this.delete.emit(kpi);
   }
 
   sparklines: { [key: string]: number[] } = {
