@@ -35,7 +35,7 @@ from exponential_smoothing import forecast_exponential_smoothing
 from sarima import generate_parameter_grid
 from models.sarima import find_best_sarima_model, forecast_sarima
 from models.prophet import forecast_prophet
-from scenario_engine import generate_scenario
+from app.core.models.scenario_engine.scenario_engine import generate_scenario
 
 from app.core.forecasting import forecast_all_kpis
 

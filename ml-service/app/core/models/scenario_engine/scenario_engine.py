@@ -12,7 +12,8 @@ DEFAULT_HIGHER_IS_BETTER = {
     "No of Conversions",
     "Revenue",
     "On Time Delivery",
-    "CSAT"
+    "CSAT",
+    "Head Count"
 }
 
 DEFAULT_LOWER_IS_BETTER = {

@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from models.scenario_engine.scenario_engine import generate_scenarios
+from models.scenario_engine.scenario_engine import generate_scenario
 
 
 @pytest.fixture
@@ -28,7 +28,7 @@ def test_generates_three_scenarios_per_forecast(historical):
         }
     )
 
-    result = generate_scenarios(forecasts, historical)
+    result = generate_scenario(forecasts, historical)
 
     assert len(result) == 6
     assert result.groupby(["kpi", "date"]).size().eq(3).all()
@@ -44,7 +44,7 @@ def test_higher_is_better_direction(historical):
         }
     )
 
-    result = generate_scenarios(forecasts, historical)
+    result = generate_scenario(forecasts, historical)
     values = result.set_index("scenario")["forecast"]
 
     assert values["Best Case"] > values["Average Case"]
@@ -61,7 +61,7 @@ def test_lower_is_better_direction(historical):
         }
     )
 
-    result = generate_scenarios(forecasts, historical)
+    result = generate_scenario(forecasts, historical)
     values = result.set_index("scenario")["forecast"]
 
     assert values["Best Case"] < values["Average Case"]
@@ -83,7 +83,7 @@ def test_uncertainty_cone_does_not_shrink(historical):
         }
     )
 
-    result = generate_scenarios(forecasts, historical)
+    result = generate_scenario(forecasts, historical)
     widths = (
         result[result["scenario"] == "Best Case"]
         .sort_values("horizon")["uncertainty_width"]
@@ -105,4 +105,4 @@ def test_unknown_kpi_direction_requires_configuration(historical):
     unknown_history = historical.assign(**{"Unknown KPI": 1.0})
 
     with pytest.raises(ValueError, match="Direction is not configured"):
-        generate_scenarios(forecasts, unknown_history)
+        generate_scenario(forecasts, unknown_history)
