@@ -35,6 +35,7 @@ from exponential_smoothing import forecast_exponential_smoothing
 from sarima import generate_parameter_grid
 from models.sarima import find_best_sarima_model, forecast_sarima
 from models.prophet import forecast_prophet
+from scenario_engine import generate_scenario
 
 from app.core.forecasting import forecast_all_kpis
 
@@ -181,4 +182,18 @@ for kpi, result in selections.items():
         result["model"]
     )
 forecasts = forecast_all_kpis(cleaned_df, SYNTHETIC_KPI_COLUMNS, periods=3)
+
+print("Historical DataFrame columns:")
+print(cleaned_df.columns.tolist())
+
+print("Historical DataFrame index name:")
+print(cleaned_df.index.name)
+
+print("Traffic column exists:", "Traffic" in cleaned_df.columns)
+
+scenarios = generate_scenario(
+    forecasts=forecasts,
+    historical_df=cleaned_df,
+)
+print("\n\n",scenarios)
 print("\n\n", forecasts)
