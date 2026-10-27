@@ -1,0 +1,49 @@
+<section class="performance-donut">
+  <header class="widget-heading">
+    <h3>Performance Distribution</h3>
+    <p>KPIs by status — click to filter</p>
+  </header>
+
+  <div class="distribution-content">
+    <div class="chart-container">
+      <canvas
+        baseChart
+        [type]="'doughnut'"
+        [data]="chartData"
+        [options]="chartOptions"
+        aria-label="Doughnut chart showing KPI counts by status"
+        role="img"
+      ></canvas>
+
+      <div class="chart-center" aria-hidden="true">
+        <strong>{{ total }}</strong>
+        <span>Total KPIs</span>
+      </div>
+    </div>
+
+    <div class="distribution-legend">
+      @for (item of distribution; track item.name) {
+        <button
+          type="button"
+          class="legend-item"
+          [class.selected]="activeSegment === item.name"
+          [attr.aria-pressed]="activeSegment === item.name"
+          (click)="toggleSegment(item.name)"
+        >
+          <span
+            class="legend-dot"
+            [style.background-color]="item.color"
+          ></span>
+
+          <span class="legend-name">{{ item.name }}</span>
+
+          <span class="legend-count">{{ item.value }}</span>
+
+          <span class="legend-percentage">
+            {{ getPercentage(item.value) }}%
+          </span>
+        </button>
+      }
+    </div>
+  </div>
+</section>

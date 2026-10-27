@@ -1,0 +1,16 @@
+<section class="widget-card">
+  <header class="widget-header">
+    <!-- <div>
+      <h3>{{ title() }}</h3>
+      <p>{{ description() }}</p>
+    </div> -->
+
+    @if (editing()) {
+      <span class="editing-label">Editing</span>
+    }
+  </header>
+
+  <div class="widget-content">
+    <ng-content />
+  </div>
+</section>

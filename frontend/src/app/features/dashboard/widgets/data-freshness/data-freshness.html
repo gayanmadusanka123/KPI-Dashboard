@@ -1,0 +1,60 @@
+<div class="freshness-widget">
+    <header class="widget-heading">
+        <h3>Data Freshness</h3>
+        <p>Recent KPI data updates</p>
+    </header>
+
+  <div class="freshness-grid">
+    @for (kpi of kpis; track kpi.id) {
+      <button
+        type="button"
+        class="freshness-card"
+        [style.background-color]="getFreshnessConfig(kpi.dataFreshness).bg"
+        [style.border-color]="getFreshnessConfig(kpi.dataFreshness).dot + '30'"
+        [attr.aria-label]="
+          kpi.name + ': ' +
+          getFreshnessConfig(kpi.dataFreshness).label +
+          ', last updated ' + kpi.lastUpdated
+        "
+      >
+        <span
+          class="freshness-dot"
+          [style.background-color]="getFreshnessConfig(kpi.dataFreshness).dot"
+          aria-hidden="true"
+        ></span>
+
+        <div class="freshness-info">
+          <p class="kpi-name" [title]="kpi.name">
+            {{ kpi.name }}
+          </p>
+
+          <p
+            class="freshness-label"
+            [style.color]="getFreshnessConfig(kpi.dataFreshness).color"
+          >
+            {{ getFreshnessConfig(kpi.dataFreshness).label }}
+          </p>
+
+          <p class="last-updated">
+            {{ kpi.lastUpdated }}
+          </p>
+        </div>
+      </button>
+    }
+  </div>
+
+  <div class="freshness-legend">
+    @for (status of freshnessStatuses; track status) {
+      <div class="legend-item">
+        <span
+          class="legend-dot"
+          [style.background-color]="freshnessConfig[status].dot"
+        ></span>
+
+        <span class="legend-label">
+          {{ freshnessConfig[status].label }}
+        </span>
+      </div>
+    }
+  </div>
+</div>

@@ -1,189 +1,39 @@
-<div class="page">
 
-  <div class="topbar-row1">
+<div class="dashboard-page">
+  <header class="page-header">
     <div>
-      <p class="eyebrow">{{ todayDate }}</p>
-      <h1 class="title">Business Performance Overview</h1>
+      <h2>KPI Dashboard</h2>
+      <p>
+        Monitor performance, track targets, and explore KPI insights.
+      </p>
     </div>
-    <div class="header-actions">
-      <button type="button" class="btn" (click)="refresh()">↻ Refresh</button>
-      <button type="button" class="btn btn-primary" (click)="exportDashboard()">⇩ Export</button>
-    </div>
+  </header>
+
+  <div class="summary-grid">
+    <section class="summary-card">
+      <p class="card-label">Total KPIs</p>
+      <h3>24</h3>
+      <span class="card-description">KPIs being tracked</span>
+    </section>
+
+    <section class="summary-card">
+      <p class="card-label">On Track</p>
+      <h3 class="success-value">16</h3>
+      <span class="card-description">Meeting expectations</span>
+    </section>
+
+    <section class="summary-card">
+      <p class="card-label">At Risk</p>
+      <h3 class="warning-value">5</h3>
+      <span class="card-description">Need attention</span>
+    </section>
+
+    <section class="summary-card">
+      <p class="card-label">Off Track</p>
+      <h3 class="danger-value">3</h3>
+      <span class="card-description">Below target</span>
+    </section>
   </div>
 
-  <div class="ai-summary">
-    <span>🤖</span>
-    <span><b>AI Summary —</b> Overall health is excellent at 87/100. Revenue and profit trending above forecast. Marketing efficiency is a short-term watch area.</span>
-  </div>
-
-  <div class="kpi-row">
-    <div class="kpi-card">
-      <div class="kpi-top"><span class="kpi-label">Total Revenue</span><span class="kpi-icon" style="background:var(--info-soft);color:var(--info);">$</span></div>
-      <div class="kpi-val">$8.4M</div>
-      <svg class="kpi-spark" viewBox="0 0 120 26" preserveAspectRatio="none"><polyline points="0,20 15,17 30,18 45,14 60,15 75,10 90,9 105,5 120,4" fill="none" stroke="var(--info)" stroke-width="2"/></svg>
-      <div class="kpi-delta" style="color:var(--good);">▲ +18.3% vs last quarter</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-top"><span class="kpi-label">Net Profit</span><span class="kpi-icon" style="background:var(--good-soft);color:var(--good);">↗</span></div>
-      <div class="kpi-val">$4.0M</div>
-      <svg class="kpi-spark" viewBox="0 0 120 26" preserveAspectRatio="none"><polyline points="0,18 15,19 30,16 45,17 60,12 75,13 90,9 105,10 120,5" fill="none" stroke="var(--good)" stroke-width="2"/></svg>
-      <div class="kpi-delta" style="color:var(--good);">▲ +31.2% vs last quarter</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-top"><span class="kpi-label">Customer Satisfaction</span><span class="kpi-icon" style="background:var(--warn-soft);color:var(--warn);">★</span></div>
-      <div class="kpi-val">94%</div>
-      <svg class="kpi-spark" viewBox="0 0 120 26" preserveAspectRatio="none"><polyline points="0,10 15,13 30,9 45,12 60,8 75,11 90,7 105,9 120,6" fill="none" stroke="var(--warn)" stroke-width="2"/></svg>
-      <div class="kpi-delta" style="color:var(--good);">▲ +3.1% vs last quarter</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-top"><span class="kpi-label">Employee Performance</span><span class="kpi-icon" style="background:var(--violet-soft);color:var(--violet);">◉</span></div>
-      <div class="kpi-val">90%</div>
-      <svg class="kpi-spark" viewBox="0 0 120 26" preserveAspectRatio="none"><polyline points="0,14 15,15 30,12 45,13 60,10 75,11 90,7 105,8 120,4" fill="none" stroke="var(--violet)" stroke-width="2"/></svg>
-      <div class="kpi-delta" style="color:var(--good);">▲ +5.9% vs last quarter</div>
-    </div>
-  </div>
-
-  <div class="intel-panel">
-    <div class="intel-head">
-      <div class="intel-title-wrap">
-        <div class="intel-icon">◈</div>
-        <div>
-          <div class="intel-title">AI Business Intelligence</div>
-          <div class="intel-sub"><span class="live-dot"></span><span>{{ lastUpdated }}</span></div>
-        </div>
-      </div>
-      <button type="button" class="link-button intel-link" (click)="openReport()">Full AI Report ›</button>
-    </div>
-    <div class="tile-grid">
-      <div class="tile s-good"><div class="tn">Health Score</div><div class="ts">87/100</div></div>
-      <div class="tile s-good"><div class="tn">Predicted Risk</div><div class="ts">Low</div></div>
-      <div class="tile s-info"><div class="tn">Growth Momentum</div><div class="ts">Strong ↑</div></div>
-      <div class="tile s-warn"><div class="tn">Anomalies</div><div class="ts">2 detected</div></div>
-    </div>
-  </div>
-
-  <div class="two-col">
-    <div class="panel">
-      <div class="panel-head">
-        <div class="panel-title-wrap">
-          <div class="panel-icon" style="background:var(--info-soft);color:var(--info);">📈</div>
-          <div><div class="panel-title">Revenue vs Profit</div><div class="panel-caption">FY 2024 · values in $M</div></div>
-        </div>
-        <button type="button" class="link-button panel-link" (click)="openAnalytics()">Full Analytics ›</button>
-      </div>
-      <div class="chart-wrap">
-        <div class="chart-legend"><span><span class="sw" style="background:var(--info);"></span>Revenue</span><span><span class="sw" style="background:var(--good);"></span>Profit</span></div>
-        <svg viewBox="0 0 360 120" preserveAspectRatio="none" style="width:100%; height:120px; display:block;">
-          <line x1="0" y1="0" x2="360" y2="0" stroke="var(--line-soft)" stroke-width="1"/>
-          <line x1="0" y1="40" x2="360" y2="40" stroke="var(--line-soft)" stroke-width="1"/>
-          <line x1="0" y1="80" x2="360" y2="80" stroke="var(--line-soft)" stroke-width="1"/>
-          <line x1="0" y1="119" x2="360" y2="119" stroke="var(--line-soft)" stroke-width="1"/>
-          <polyline points="0,78 30,74 60,76 90,66 120,62 150,56 180,58 210,50 240,46 270,40 300,32 330,20 360,16" fill="none" stroke="var(--info)" stroke-width="2.5"/>
-          <polyline points="0,104 30,100 60,102 90,98 120,96 150,92 180,94 210,90 240,86 270,84 300,80 330,74 360,70" fill="none" stroke="var(--good)" stroke-width="2.5"/>
-        </svg>
-        <div class="chart-labels"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span></div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-head">
-        <div class="panel-title-wrap">
-          <div class="panel-icon" style="background:var(--violet-soft);color:var(--violet);">🔮</div>
-          <div><div class="panel-title">Revenue Forecast</div><div class="panel-caption">Next 6 months projection</div></div>
-        </div>
-        <button type="button" class="link-button panel-link" (click)="openForecast()">Full Forecast ›</button>
-      </div>
-      <div class="chart-wrap">
-        <svg viewBox="0 0 360 120" preserveAspectRatio="none" style="width:100%; height:120px; display:block;">
-          <defs>
-            <linearGradient id="fcGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="var(--violet)" stop-opacity="0.35"/>
-              <stop offset="100%" stop-color="var(--violet)" stop-opacity="0.02"/>
-            </linearGradient>
-          </defs>
-          <line x1="0" y1="0" x2="360" y2="0" stroke="var(--line-soft)" stroke-width="1"/>
-          <line x1="0" y1="60" x2="360" y2="60" stroke="var(--line-soft)" stroke-width="1"/>
-          <line x1="0" y1="119" x2="360" y2="119" stroke="var(--line-soft)" stroke-width="1"/>
-          <polygon points="0,88 60,80 120,72 180,62 240,50 300,36 360,20 360,119 0,119" fill="url(#fcGrad)"/>
-          <polyline points="0,88 60,80 120,72 180,62 240,50 300,36 360,20" fill="none" stroke="var(--violet)" stroke-width="2.5"/>
-        </svg>
-        <div class="chart-labels"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="two-col">
-    <div class="panel">
-      <div class="panel-head">
-        <div class="panel-title-wrap">
-          <div class="panel-icon" style="background:var(--accent-soft);color:var(--accent);">☑</div>
-          <div><div class="panel-title">Task Panel</div></div>
-        </div>
-        <button type="button" class="link-button panel-link" (click)="openAllReports()">All Reports ›</button>
-      </div>
-      <div class="task-list">
-        <div class="task-row">
-          <div class="task-check" [class.done]="isTaskDone(0)" (click)="toggleTask(0)">{{ isTaskDone(0) ? '✓' : '' }}</div>
-          <div class="task-info"><div class="task-name" [class.done]="isTaskDone(0)">Q4 Forecast Review</div><div class="task-cat">Finance</div></div>
-          <div class="task-meta"><span class="pbadge high">High</span><span class="task-due">Today</span></div>
-        </div>
-        <div class="task-row">
-          <div class="task-check" [class.done]="isTaskDone(1)" (click)="toggleTask(1)">{{ isTaskDone(1) ? '✓' : '' }}</div>
-          <div class="task-info"><div class="task-name" [class.done]="isTaskDone(1)">Marketing Budget Approval</div><div class="task-cat">Marketing</div></div>
-          <div class="task-meta"><span class="pbadge medium">Medium</span><span class="task-due">Dec 24</span></div>
-        </div>
-        <div class="task-row">
-          <div class="task-check" [class.done]="isTaskDone(2)" (click)="toggleTask(2)">{{ isTaskDone(2) ? '✓' : '' }}</div>
-          <div class="task-info"><div class="task-name" [class.done]="isTaskDone(2)">HR Satisfaction Survey</div><div class="task-cat">HR</div></div>
-          <div class="task-meta"><span class="pbadge low">Low</span><span class="task-due">Dec 26</span></div>
-        </div>
-        <div class="task-row">
-          <div class="task-check" [class.done]="isTaskDone(3)" (click)="toggleTask(3)">{{ isTaskDone(3) ? '✓' : '' }}</div>
-          <div class="task-info"><div class="task-name" [class.done]="isTaskDone(3)">Sales Pipeline Audit</div><div class="task-cat">Sales</div></div>
-          <div class="task-meta"><span class="pbadge high">High</span><span class="task-due">Dec 27</span></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-head">
-        <div class="panel-title-wrap">
-          <div class="panel-icon" style="background:var(--good-soft);color:var(--good);">◷</div>
-          <div><div class="panel-title">Activity Timeline</div></div>
-        </div>
-      </div>
-      <div class="tl-list">
-        <div class="tl-row">
-          <div class="tl-icon" style="background:var(--info-soft);color:var(--info);">＋</div>
-          <div class="tl-info"><div class="tl-title">New KPI added</div><div class="tl-sub">Sarah M. · 10 min ago</div></div>
-        </div>
-        <div class="tl-row">
-          <div class="tl-icon" style="background:var(--violet-soft);color:var(--violet);">◈</div>
-          <div class="tl-info"><div class="tl-title">AI Model Updated</div><div class="tl-sub">AI Engine · 2h ago</div></div>
-        </div>
-        <div class="tl-row">
-          <div class="tl-icon" style="background:var(--good-soft);color:var(--good);">⇩</div>
-          <div class="tl-info"><div class="tl-title">Report exported</div><div class="tl-sub">Tom K. · 4h ago</div></div>
-        </div>
-        <div class="tl-row">
-          <div class="tl-icon" style="background:var(--warn-soft);color:var(--warn);">⚠</div>
-          <div class="tl-info"><div class="tl-title">Threshold alert</div><div class="tl-sub">System · 6h ago</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="export-panel">
-    <div class="export-copy">
-      <div class="et">Export &amp; Share</div>
-      <div class="es">Download or share your dashboard and reports.</div>
-    </div>
-    <div class="export-actions">
-      <button type="button" class="exp-btn red" (click)="generatePdf()">📄 Generate PDF</button>
-      <button type="button" class="exp-btn green" (click)="exportExcel()">📊 Export Excel</button>
-      <button type="button" class="exp-btn blue" (click)="shareDashboard()">🔗 Share Dashboard</button>
-      <button type="button" class="exp-btn violet" (click)="downloadReport()">⇩ Download Report</button>
-    </div>
-  </div>
-
+  <app-dashboard-grid />
 </div>

@@ -1,0 +1,71 @@
+<section class="target-achievement">
+    <header class="widget-heading">
+        <h3>Target Achievement</h3>
+        <p>Progress against targets</p>
+    </header>
+
+  <div class="achievement-main">
+    <div class="achievement-value-section">
+      <div class="achievement-value">
+        {{ rate }}<span>%</span>
+      </div>
+
+      <div
+        class="achievement-delta"
+        [class.positive]="delta >= 0"
+        [class.negative]="delta < 0"
+      >
+        <span>{{ delta >= 0 ? '↑' : '↓' }}</span>
+        {{ abs(delta) }}pp vs last period
+      </div>
+
+      <p class="achievement-description">
+        {{ onTargetCount }} of {{ total }} KPIs on or above target
+      </p>
+    </div>
+
+    <div
+      class="progress-ring"
+      role="img"
+      [attr.aria-label]="'Target achievement rate: ' + rate + '%'"
+    >
+      <svg viewBox="0 0 72 72" width="72" height="72">
+        <circle
+          cx="36"
+          cy="36"
+          r="30"
+          fill="none"
+          stroke="#F1F5F9"
+          stroke-width="8"
+        />
+
+        <circle
+          cx="36"
+          cy="36"
+          r="30"
+          fill="none"
+          stroke="#2563EB"
+          stroke-width="8"
+          stroke-linecap="round"
+          [attr.stroke-dasharray]="
+            (rate / 100) * circumference + ' ' + circumference
+          "
+          transform="rotate(-90 36 36)"
+        />
+      </svg>
+
+      <span class="progress-ring-label">{{ rate }}%</span>
+    </div>
+  </div>
+
+  <div class="status-summary">
+    @for (item of statusSummary; track item.label) {
+      <div class="status-card">
+        <div class="status-count" [style.color]="item.color">
+          {{ item.count }}
+        </div>
+        <div class="status-label">{{ item.label }}</div>
+      </div>
+    }
+  </div>
+</section>
