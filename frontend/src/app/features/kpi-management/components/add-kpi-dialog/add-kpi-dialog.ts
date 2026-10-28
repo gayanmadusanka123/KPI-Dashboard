@@ -144,6 +144,7 @@ export class AddKpiDialog implements OnInit {
     return this.periodFrequency === 'weekly' ? 'date' : 'month';
   }
 
+  // Initialize the component
   ngOnInit(): void {
 
     this.kpiForm = this.fb.group({
@@ -198,6 +199,7 @@ export class AddKpiDialog implements OnInit {
 
     });
 
+    //check if the mode is 'period' and build period options based on the selected KPI's frequency
     if (this.mode === 'period') {
       this.periodOptions = this.buildPeriodOptions(this.selectedKpi?.frequency);
       this.kpiForm.patchValue({
@@ -205,6 +207,7 @@ export class AddKpiDialog implements OnInit {
       });
     }
 
+// Load lookup data for categories, departments, and users if the mode is 'create' or 'edit'
     if (this.mode === 'create' || this.mode === 'edit') {
       this.lookupApi.getCategories().subscribe({
         next: categories => this.categories = categories.filter(item => item.status === 'ACTIVE'),
@@ -278,10 +281,13 @@ export class AddKpiDialog implements OnInit {
       0
     );
   }
-
+ 
+  //when the user clicks "Continue" or "Save"
   continue(): void {
     this.submitted = true;
 
+    // Validate the form based on the current mode
+    //mode === 'period' 
     if (this.mode === 'period') {
       if (this.f['period'].invalid || this.f['targetValue'].invalid) return;
 
@@ -315,6 +321,7 @@ export class AddKpiDialog implements OnInit {
         : performance >= 85 ? 'At Risk'
         : 'Off Track';
 
+  // Close the dialog and return the period record data
       this.dialogRef.close({
         type: 'period',
         periodRecord: {
@@ -335,7 +342,8 @@ export class AddKpiDialog implements OnInit {
       });
       return;
     }
-
+    //add kpi form validation
+    //mode === 'create' or mode === 'edit'
     if (
       this.f['kpiName'].invalid ||
       this.f['categoryId'].invalid ||
@@ -347,6 +355,7 @@ export class AddKpiDialog implements OnInit {
       return;
     }
 
+    //close the dialog and return the KPI data as a record of key-value pairs
     this.dialogRef.close({
       type: this.mode,
       kpiData: this.kpiForm.value

@@ -56,6 +56,7 @@ export class KpiManagement implements OnInit {
       panelClass: 'kpi-dialog-panel'
     });
 
+    // Handle the dialog close event and process the result
     dialogRef.afterClosed().subscribe((result: {
       type: string;
       kpiData: Record<string, string>;
@@ -63,6 +64,8 @@ export class KpiManagement implements OnInit {
       if (!result || result.type !== 'create' || !result.kpiData) return;
 
       const data = result.kpiData;
+
+      // Map the form data to a KpiRequestDto
       const request = mapKpiFormToRequest({
         name: data['kpiName'] ?? '',
         categoryId: data['categoryId'] || null,

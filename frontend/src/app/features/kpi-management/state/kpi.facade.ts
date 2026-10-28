@@ -50,7 +50,7 @@ export class KpiFacade {
     this.deleting$ = store.deleting$;
     this.error$ = store.error$;
   }
-
+  // Load all KPIs
   loadKpis(): void {
     this.store.clearError();
     this.store.setLoading(true);
@@ -71,7 +71,7 @@ export class KpiFacade {
       finalize(() => this.store.setLoading(false))
     ).subscribe();
   }
-
+// Load a specific KPI by ID
   loadKpi(id: string): void {
     this.store.clearError();
     this.store.clearSelectedKpi();
@@ -108,11 +108,16 @@ export class KpiFacade {
     ).subscribe();
   }
 
+  // Create a new KPI
   createKpi(request: KpiRequestDto): Observable<KpiDetails> {
+    // Set the saving state to true before making the API call
     this.store.setSaving(true);
 
+    // Make the API call to create the KPI and handle the response
     return this.kpiApi.create(request).pipe(
       map(mapKpiDtoToKpi),
+      
+      //update the local state with the newly created KPI
       tap(kpi => this.store.replaceKpi(kpi)),
       catchError(error => {
         this.store.setError(getHttpErrorMessage(error, 'Unable to create the KPI.'));
