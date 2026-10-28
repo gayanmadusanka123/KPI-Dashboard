@@ -18,6 +18,7 @@ export class Auth implements OnInit {
   successMessage = '';
 
   private readonly formBuilder = inject(FormBuilder);
+  // Using non-nullable form group
   readonly form = this.formBuilder.nonNullable.group({
     userName: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
@@ -45,6 +46,7 @@ export class Auth implements OnInit {
     return this.mode === 'signup';
   }
 
+  // Handle form submission for login or signup
   submit(): void {
     this.errorMessage = '';
     this.successMessage = '';
@@ -62,6 +64,7 @@ export class Auth implements OnInit {
     const request = this.isSignup
       ? { userName, email, password, role: 'ROLE_USER' as const }
       : { email, password };
+      // Determine the operation based on the mode (login/signup)
     const operation = this.isSignup ? this.auth.signup(request) : this.auth.login(request);
 
     operation.subscribe({
@@ -81,6 +84,7 @@ export class Auth implements OnInit {
     });
   }
 
+  // Configure form validators based on the mode (login/signup)
   private configureForm(): void {
     const userName = this.form.controls.userName;
     const confirmPassword = this.form.controls.confirmPassword;
