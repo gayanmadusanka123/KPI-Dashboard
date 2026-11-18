@@ -2,6 +2,9 @@ import numpy as np
 
 def calculate_status(performance_score, thresholds):
 
+    if performance_score is None:
+        return "Insufficient Data"
+
     if not np.isfinite(performance_score):
         return "Insufficient Data"
 
