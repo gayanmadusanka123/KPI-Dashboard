@@ -10,4 +10,6 @@ public interface KpiActualRepository
         extends JpaRepository<KpiActual, UUID> {
 
     List<KpiActual> findByKpi_IdOrderByPeriod_PeriodStartAsc(UUID kpiId);
+
+    UUID kpiId(UUID kpiId);
 }
