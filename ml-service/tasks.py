@@ -6,6 +6,8 @@ import pandas as pd
 from celery_app import celery_app
 import requests
 
+from app.core.performance.performance_service import (run_performance_engine)
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 sys.path.insert(0, os.path.join(BASE_DIR, "synthetic"))
@@ -96,6 +98,12 @@ def test_kpi_forecasting():
     print(df.head().to_string(index=False))
 
     cleaned_df = clean_time_series(df, kpi_columns=KPI_COLUMNS)
+
+    #run performance calculation engine
+    performance_df = run_performance_engine(cleaned_df)
+
+    print("\nPerformance Calculation Results: ")
+    print(performance_df.tail().to_string(index=False))
 
     forecasts = forecast_all_kpis(
         cleaned_df,
