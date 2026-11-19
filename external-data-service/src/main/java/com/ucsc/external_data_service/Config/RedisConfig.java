@@ -1,6 +1,7 @@
 package com.ucsc.external_data_service.Config;
 
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
@@ -16,6 +17,7 @@ import java.time.Duration;
 @EnableCaching
 public class RedisConfig {
 
+    @Bean
     public RedisCacheManager redisCacheManager(
             RedisConnectionFactory redisConnectionFactory,
             ObjectMapper objectMapper
