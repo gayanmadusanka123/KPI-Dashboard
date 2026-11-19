@@ -16,5 +16,5 @@ public interface KpiPeriodRepository
             LocalDate periodEnd
     );
 
-    List<KpiPeriod> findByKpi_IdOrderByPeriodStartDesc(UUID kpiId);
+    List<KpiPeriod> findByKpi_IdOrderByPeriodStartAsc(UUID kpiId);
 }
