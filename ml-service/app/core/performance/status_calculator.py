@@ -23,22 +23,19 @@ def calculate_status(performance_score, thresholds):
 
     return "Off Track"
 
-def add_status_badges(performance_df, kpi_config):
+def add_status_badges(performance_df, thresholds):
 
     performance_df = performance_df.copy()
 
-    statuses = []
-
-    for _, row in performance_df.iterrows():
-
-        kpi_name = row["KPI"]
-        score = row["Performance Score"]
-
-        thresholds = kpi_config[kpi_name]["thresholds"]
-
-        statuses.append(calculate_status(score, thresholds))
-
-    performance_df["Status"] = statuses
+    performance_df["Status"] = performance_df[
+        "Performance Score"
+    ].apply(
+        lambda score: calculate_status(
+            score,
+            thresholds
+        )
+    )
 
     return performance_df
+
 

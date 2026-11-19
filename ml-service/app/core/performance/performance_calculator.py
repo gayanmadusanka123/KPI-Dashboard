@@ -4,78 +4,96 @@ import pandas as pd
 def calculate_kpi_performance(
         df,
         kpi_name,
-        config,
-        date_column=None,
-        rolling_window=3
+        direction,
+        rolling_window=3,
+        score_cap=200
 ):
-    actual = df[kpi_name].astype(float)
-
-    target = float(config["target"])
-    direction = config["direction"]
-
-    if target <= 0:
-        raise ValueError(
-            f"Target for {kpi_name} must be greater than zero."
-        )
 
     if direction not in ["HIGHER_BETTER", "LOWER_BETTER"]:
         raise ValueError(
-            f"Invalid direction for {kpi_name}"
+            f"Invalid direction for {kpi_name}: {direction}"
         )
+
+    actual = pd.to_numeric(df["Actual"], errors="coerce")
+    target = pd.to_numeric(df["Target"], errors="coerce")
+    valid_target = target > 0
+
+    if direction == "HIGHER_BETTER":
+        variance = actual - target
+        performance_score = (actual / target) * 100
+    else:
+        variance = target - actual
+        performance_score = (target / actual) * 100
+
+        performance_score = performance_score.where(
+            actual != 0,
+            score_cap
+        )
+
+        performance_score = performance_score.clip(
+            upper=score_cap
+        )
+
+    # Do not calculate when actual or target is missing,
+    # or when target is invalid.
+    valid_data = actual.notna() & target.notna() & valid_target
+
+    variance = variance.where(valid_data)
+
+    performance_score = performance_score.where(valid_data)
+
+    #variance percentage
+    variance_percent = (variance / target) * 100
+
+    #period on period change
+    raw_pop = actual.pct_change(fill_method=None) * 100
+
+    raw_pop = raw_pop.replace(
+        [np.inf, -np.inf],
+        np.nan
+    )
+
+    if direction == "HIGHER_BETTER":
+        pop_change = raw_pop
+    else:
+        pop_change = -raw_pop
 
     result = pd.DataFrame(index=df.index)
 
     result["KPI"] = kpi_name
+    result["Direction"] = direction
+
+    result["Period ID"] = df["Period ID"]
+    result["Date"] = pd.to_datetime(df["Date"])
+
     result["Actual"] = actual
     result["Target"] = target
 
     result["Raw Variance"] = actual - target
+    result["Variance"] = variance
+    result["Variance %"] = variance_percent
 
-    if direction == "HIGHER_BETTER":
-        result["Variance"] = actual - target
-    else:
-        result["Variance"] = target - actual
+    result["Performance Score"] = performance_score
+    result["PoP Change %"] = pop_change
 
-    result["Variance %"] = (result["Variance"] / target) * 100
-
-    if direction == "HIGHER_BETTER":
-        result["Performance Score"] = (actual / target) * 100
-    else:
-        result["Performance Score"] = np.where(
-            actual == 0,
-            np.inf,
-            (target / actual) * 100
-        )
-
-    # Period-on-period change
-    raw_pop = actual.pct_change() * 100
-
-    if direction == "HIGHER_BETTER":
-        result["PoP Change %"] = raw_pop
-    else:
-        result["PoP Change %"] = -raw_pop
-
-    # Rolling average of performance scores
     result["Rolling Average"] = (
-        result["Performance Score"]
-        .rolling(
+        performance_score.rolling(
             window=rolling_window,
             min_periods=1
-        )
-        .mean()
+        ).mean()
     )
 
-    #cumulative average performance
+    # Cumulative average performance
     result["Cumulative Performance"] = (
-        result["Performance Score"].expanding().mean()
+        performance_score.expanding(
+            min_periods=1
+        ).mean()
     )
 
-    return result.reset_index(names="Date")
-
+    return result.reset_index(drop=True)
 
 def calculate_all_kpi_performance(
-    df,
-    kpi_config,
+    performance_inputs,
     rolling_window=3
 ):
     """
@@ -84,23 +102,21 @@ def calculate_all_kpi_performance(
 
     all_results = []
 
-    for kpi_name, config in kpi_config.items():
-
-        if kpi_name not in df.columns:
-            print(f"Skipping missing KPI: {kpi_name}")
-            continue
+    for item in performance_inputs:
 
         result = calculate_kpi_performance(
-            df=df,
-            kpi_name=kpi_name,
-            config=config,
+            df=item["data"],
+            kpi_name=item["kpi_name"],
+            direction=item["direction"],
             rolling_window=rolling_window
         )
 
         all_results.append(result)
 
     if not all_results:
-        raise ValueError("No KPI performance results generated.")
+        raise ValueError(
+            "No KPI performance results generated."
+        )
 
     return pd.concat(
         all_results,

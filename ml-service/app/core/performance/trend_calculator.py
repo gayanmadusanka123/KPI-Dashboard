@@ -1,3 +1,6 @@
+import numpy as np
+import pandas as pd
+
 def calculate_trend(
         scores,
         n=3,
@@ -6,11 +9,17 @@ def calculate_trend(
     if len(scores) < n * 2:
         return "Insufficient Data"
 
-    recent_average = scores.iloc[-n:].mean()
+    recent_scores = scores.iloc[-n:]
+    previous_scores = scores.iloc[-(n * 2):-n]
 
-    previous_average = (
-        scores.iloc[-(n * 2):-n].mean()
-    )
+    if (
+        not np.isfinite(recent_scores).all()
+        or not np.isfinite(previous_scores).all()
+    ):
+        return "Insufficient Data"
+
+    recent_average = recent_scores.mean()
+    previous_average = previous_scores.mean()
 
     difference = recent_average - previous_average
 
@@ -37,10 +46,14 @@ def add_trend_direction(
 
     for kpi_name, group in performance_df.groupby("KPI"):
 
-        scores = group["Performance Score"].reset_index(drop=True)
+        scores = group[
+            "Performance Score"
+        ].reset_index(drop=True)
+
         trends = []
 
         for i in range(len(scores)):
+
             historical_scores = scores.iloc[:i + 1]
 
             trend = calculate_trend(
@@ -57,7 +70,3 @@ def add_trend_direction(
         ] = trends
 
     return performance_df
-
-
-
-
