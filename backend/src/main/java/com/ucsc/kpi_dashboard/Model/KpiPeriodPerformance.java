@@ -9,7 +9,15 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "kpi_period_performance")
+@Table(
+        name = "kpi_period_performance",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_kpi_period_performance",
+                        columnNames = {"kpi_id", "period_id"}
+                )
+        }
+)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -66,7 +66,7 @@ def forecast_linear_regression(series, kpi_name, periods=3, confidence=0.80):
         "model": "Linear Regression",
         "date": future_dates,
         "forecast": predictions,
-        "lower bound": lower_bound,
+        "lower_bound": lower_bound,
         "upper_bound": upper_bound
     })
 

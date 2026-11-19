@@ -2,6 +2,7 @@ package com.ucsc.kpi_dashboard.Mapper;
 
 import com.ucsc.kpi_dashboard.Model.KpiActual;
 import com.ucsc.kpi_dashboard.Payload.Dto.KpiActualDto;
+import com.ucsc.kpi_dashboard.Payload.Dto.KpiActualObservationDto;
 
 public class KpiActualMapper {
 
@@ -25,6 +26,19 @@ public class KpiActualMapper {
                         ? actual.getUpdatedBy().getId()
                         : null
         );
+
+        return dto;
+    }
+
+    //for retrieveing time-series observations needed by forecasting services
+    public static KpiActualObservationDto toObservationDto(KpiActual actual) {
+        KpiActualObservationDto dto = new KpiActualObservationDto();
+
+        dto.setKpiId(actual.getKpi().getId());
+        dto.setKpiName(actual.getKpi().getName());
+        dto.setPeriodStart(actual.getPeriod().getPeriodStart());
+        dto.setPeriodEnd(actual.getPeriod().getPeriodEnd());
+        dto.setActualValue(actual.getActualValue());
 
         return dto;
     }

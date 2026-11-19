@@ -1,6 +1,7 @@
 package com.ucsc.kpi_dashboard.Controller;
 
 import com.ucsc.kpi_dashboard.Payload.Dto.KpiActualDto;
+import com.ucsc.kpi_dashboard.Payload.Dto.KpiActualObservationDto;
 import com.ucsc.kpi_dashboard.Payload.Dto.KpiActualRequestDto;
 import com.ucsc.kpi_dashboard.Service.KpiActualService;
 
@@ -70,5 +71,14 @@ public class KpiActualController {
         kpiActualService.deleteActual(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/observations/{kpiId}")
+    public ResponseEntity<List<KpiActualObservationDto>> getActualHistory(
+            @PathVariable UUID kpiId){
+
+        return ResponseEntity.ok(
+                kpiActualService.getActualHistory(kpiId)
+        );
     }
 }

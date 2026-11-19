@@ -27,8 +27,10 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/admin/**").hasRole("ADMIN") // specific first
+                        .requestMatchers("/api/forecasts/**").permitAll()//temporary to check the forecast
                         .requestMatchers("/api/**").authenticated()
-                        .anyRequest().permitAll()
+                        //.requestMatchers("/api/**").permitAll()
+                        //.anyRequest().permitAll()
                 )
                 .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
