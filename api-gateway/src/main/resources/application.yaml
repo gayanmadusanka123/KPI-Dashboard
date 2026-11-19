@@ -1,3 +1,71 @@
+server:
+  port: ${SERVER_PORT:8080}
+
 spring:
   application:
     name: api-gateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+
+          routes:
+
+            # KPI service
+            - id: kpi-service
+              uri: ${KPI_SERVICE_URL:http://localhost:8081}
+              predicates:
+                - Path=/api/kpis/**
+
+            # External data service
+            - id: external-data-service
+              uri: ${EXTERNAL_DATA_SERVICE_URL:http://localhost:8082}
+              predicates:
+                - Path=/api/external-data/**
+
+            # Forecast service
+            - id: forecast-service
+              uri: ${FORECAST_SERVICE_URL:http://localhost:8083}
+              predicates:
+                - Path=/api/forecasts/**
+
+          globalcors:
+            add-to-simple-url-handler-mapping: true
+            cors-configurations:
+              '[/**]':
+                allowedOrigins:
+                  - ${FRONTEND_URL:http://localhost:3000}
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - PATCH
+                  - DELETE
+                  - OPTIONS
+                allowedHeaders:
+                  - "*"
+                exposedHeaders:
+                  - "X-Correlation-Id"
+                allowCredentials: true
+                maxAge: 3600
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - gateway
+          - metrics
+
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    reactor.netty.http.client: INFO
+    com.ucsc.gateway: DEBUG
