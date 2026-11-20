@@ -34,3 +34,16 @@ def trigger_performance_calculation(
             status_code=500,
             detail=f"Could not queue performance calculation: {str(exc)}"
         )
+
+from fastapi import Request
+
+@app.post("/debug/body")
+async def debug_request_body(request: Request):
+    raw_body = await request.body()
+
+    return {
+        "content_type": request.headers.get("content-type"),
+        "content_length": request.headers.get("content-length"),
+        "body_length": len(raw_body),
+        "body_received": raw_body.decode("utf-8", errors="replace")
+    }

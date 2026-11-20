@@ -17,5 +17,7 @@ celery_app = Celery(
 """
 celery -A celery_app:celery_app worker --loglevel=INFO --pool=solo
 
+uv run celery -A celery_app:celery_app worker --loglevel=INFO --pool=solo
+
 python -c "from tasks import test_kpi_forecasting; result = test_kpi_forecasting.delay(); print('Task ID:', result.id); print('Result:', result.get(timeout=180))"
 """

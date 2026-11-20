@@ -1,5 +1,6 @@
 package com.ucsc.kpi_dashboard.Service.Implimentation;
 
+import com.ucsc.kpi_dashboard.Events.KpiActualChangedEvent;
 import com.ucsc.kpi_dashboard.Exeptions.ResourceNotFoundException;
 import com.ucsc.kpi_dashboard.Mapper.KpiActualMapper;
 import com.ucsc.kpi_dashboard.Model.Kpi;
@@ -16,6 +17,7 @@ import com.ucsc.kpi_dashboard.Repository.KpiPeriodRepository;
 import com.ucsc.kpi_dashboard.Repository.KpiRepository;
 import com.ucsc.kpi_dashboard.Service.KpiActualService;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,16 +34,20 @@ public class KpiActualServiceImpl implements KpiActualService {
     private final KpiRepository kpiRepository;
     private final KpiPeriodRepository kpiPeriodRepository;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     public KpiActualServiceImpl(
             KpiActualRepository kpiActualRepository,
             KpiActualHistoryRepository kpiActualHistoryRepository,
             KpiRepository kpiRepository,
-            KpiPeriodRepository kpiPeriodRepository) {
+            KpiPeriodRepository kpiPeriodRepository,
+            ApplicationEventPublisher eventPublisher) {
 
         this.kpiActualRepository = kpiActualRepository;
         this.kpiActualHistoryRepository = kpiActualHistoryRepository;
         this.kpiRepository = kpiRepository;
         this.kpiPeriodRepository = kpiPeriodRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -69,6 +75,10 @@ public class KpiActualServiceImpl implements KpiActualService {
         // authentication is integrated.
 
         KpiActual savedActual = kpiActualRepository.save(actual);
+
+        eventPublisher.publishEvent(
+                new KpiActualChangedEvent(savedActual.getKpi().getId())
+        );
 
         return KpiActualMapper.toDto(savedActual);
     }
@@ -142,6 +152,12 @@ public class KpiActualServiceImpl implements KpiActualService {
 
         KpiActual updatedActual =
                 kpiActualRepository.save(actual);
+
+        if(valueChanged){
+            eventPublisher.publishEvent(
+                    new KpiActualChangedEvent(updatedActual.getKpi().getId())
+            );
+        }
 
         return KpiActualMapper.toDto(updatedActual);
     }
