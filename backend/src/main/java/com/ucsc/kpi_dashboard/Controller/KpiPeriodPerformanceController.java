@@ -1,14 +1,14 @@
 package com.ucsc.kpi_dashboard.Controller;
 
 import com.ucsc.kpi_dashboard.Payload.Dto.Performance.PerformanceResultBatchRequestDto;
+import com.ucsc.kpi_dashboard.Payload.Dto.Performance.PerformanceResultsResponseDto;
 import com.ucsc.kpi_dashboard.Service.KpiPeriodPerformanceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/performance")
@@ -26,5 +26,15 @@ public class KpiPeriodPerformanceController {
         return ResponseEntity.ok(
                 "Performance results saved successfully"
         );
+    }
+
+    @GetMapping("/results/{kpiId}")
+    public ResponseEntity<PerformanceResultsResponseDto> getPerformanceResults(
+            @PathVariable UUID kpiId){
+
+        PerformanceResultsResponseDto response =
+                kpiPeriodPerformanceService.getPerformanceResults(kpiId);
+
+        return ResponseEntity.ok(response);
     }
 }

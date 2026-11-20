@@ -7,6 +7,8 @@ from celery_app import celery_app
 import requests
 
 from app.core.performance.performance_service import (run_performance_engine)
+from app.core.performance.performance_service import (run_performance_for_kpi)
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -156,3 +158,27 @@ def test_kpi_forecasting():
         "forecast_rows_sent": len(payload),
         "spring_boot_status": response.status_code
     }
+
+@celery_app.task(
+    bind=True,
+    name="tasks.calculate_kpi_performance"
+)
+def calculate_kpi_performance_task(self, kpi_id):
+    try:
+        print(f"Starting performance calculation for KPI: {kpi_id}")
+
+        performance_df = run_performance_for_kpi(kpi_id)
+
+        result = {
+            "status": "SUCCESS",
+            "kpiId": str(kpi_id),
+            "periodsCalculated": len(performance_df)
+        }
+
+        print(f"Performance calculation completed: {result}")
+
+        return result
+
+    except Exception as exc:
+        print(f"Performance calculation failed for KPI {kpi_id}: {exc}")
+        raise
