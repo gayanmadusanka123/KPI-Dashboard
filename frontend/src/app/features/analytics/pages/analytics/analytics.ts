@@ -111,6 +111,7 @@ export class Analytics implements OnInit {
     });
   }
 
+
   private processOverallPerformance(
     results: {
       kpi: KpiDetails;
@@ -118,6 +119,108 @@ export class Analytics implements OnInit {
     }[]
   ): void {
 
-    // We will add the aggregation logic here.
+    // Keep only KPIs that successfully returned performance data.
+    const validResults = results.filter(
+      (item): item is {
+        kpi: KpiDetails;
+        performance: KpiPerformance;
+      } => item.performance !== null
+    );
+
+    this.performanceResults.set(
+      validResults.map(item => item.performance)
+    );
+
+    // Find the latest calculated result for each KPI.
+    const summaries: KpiPerformanceSummary[] = validResults.map(
+      ({ kpi, performance }) => {
+
+        const latestPeriod = [...performance.periods]
+          .filter(period => period.performanceScore !== null)
+          .sort(
+            (a, b) =>
+              new Date(b.periodEnd).getTime() -
+              new Date(a.periodEnd).getTime()
+          )[0];
+
+        return {
+          kpiId: kpi.id,
+          kpiName: kpi.name,
+          department: kpi.dept || 'Unassigned',
+          latestScore: latestPeriod?.performanceScore ?? null,
+          latestStatus: latestPeriod?.status ?? null,
+          latestTrend: latestPeriod?.trendDirection ?? null
+        };
+      }
+    );
+
+    this.performanceSummaries.set(summaries);
+
+    // KPIs with an available calculated score.
+    const availableResults = summaries.filter(
+      item => item.latestScore !== null
+    );
+
+    const scores = availableResults.map(
+      item => item.latestScore!
+    );
+
+    const averagePerformance = scores.length > 0
+      ? scores.reduce((sum, score) => sum + score, 0) / scores.length
+      : null;
+
+    const normalizeStatus = (status: string | null): string =>
+      status?.trim().toLowerCase().replace(/[_-]/g, ' ') ?? '';
+
+    // Calculate overall summary.
+    this.overallSummary.set({
+      totalKpis: results.length,
+      kpisWithResults: availableResults.length,
+      averagePerformance,
+
+      exceededCount: availableResults.filter(
+        item => normalizeStatus(item.latestStatus) === 'exceeded'
+      ).length,
+
+      onTrackCount: availableResults.filter(
+        item => normalizeStatus(item.latestStatus) === 'on track'
+      ).length,
+
+      atRiskCount: availableResults.filter(
+        item => normalizeStatus(item.latestStatus) === 'at risk'
+      ).length,
+
+      offTrackCount: availableResults.filter(
+        item => normalizeStatus(item.latestStatus) === 'off track'
+      ).length
+    });
+
+    // Group KPI scores by department.
+    const departmentGroups = new Map<string, number[]>();
+
+    availableResults.forEach(item => {
+      const department = item.department;
+      const departmentScores = departmentGroups.get(department) ?? [];
+
+      departmentScores.push(item.latestScore!);
+      departmentGroups.set(department, departmentScores);
+    });
+
+    const departments: DepartmentPerformance[] = Array.from(
+      departmentGroups.entries()
+    ).map(([department, departmentScores]) => ({
+      department,
+      averageScore:
+        departmentScores.reduce((sum, score) => sum + score, 0) /
+        departmentScores.length,
+      kpiCount: departmentScores.length
+    }));
+
+    this.departmentPerformance.set(departments);
+
+    console.log('Overall Performance:', this.overallSummary());
+    console.log('KPI Summaries:', this.performanceSummaries());
+    console.log('Department Performance:', this.departmentPerformance());
   }
+
 }
