@@ -27,9 +27,20 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/admin/**").hasRole("ADMIN") // specific first
+
+                        // ML service communication
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.GET,
+                                "/api/performance/inputs/**"
+                        ).permitAll()
+
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.POST,
+                                "/api/performance/results/batch"
+                        ).permitAll()
+
                         .requestMatchers("/api/forecasts/**").permitAll()//temporary to check the forecast
                         .requestMatchers("/api/**").authenticated()
-                        .requestMatchers("/api/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class)
