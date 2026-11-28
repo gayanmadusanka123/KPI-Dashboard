@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from uuid import UUID
 
-from tasks import calculate_kpi_performance_task
+from tasks import calculate_kpi_performance_task, forecast_kpi_task
 
 app = FastAPI(
     title="KPI ML Service",
@@ -33,6 +33,33 @@ def trigger_performance_calculation(
         raise HTTPException(
             status_code=500,
             detail=f"Could not queue performance calculation: {str(exc)}"
+        )
+
+class ForecastCalculationRequest(BaseModel):
+    kpi_id: UUID = Field(alias="kpiId")
+    periods: int = Field(default=3, ge=1, le=24)
+
+@app.post("/api/forecast/calculate", status_code=202)
+def trigger_forecast_calculation(
+    request: ForecastCalculationRequest
+):
+    try:
+        task = forecast_kpi_task.delay(
+            str(request.kpi_id),
+            request.periods
+        )
+
+        return{
+            "message": "Forecast calculation queued successfully",
+            "taskId": task.id,
+            "kpiId": str(request.kpi_id),
+            "status": "QUEUED"
+        }
+
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Could not queue forecast calculation: {str(exc)}"
         )
 
 from fastapi import Request

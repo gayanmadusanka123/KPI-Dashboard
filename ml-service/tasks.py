@@ -77,87 +77,97 @@ def fetch_kpi_observations(kpi_id):
 
     df = df.rename(columns={
         "periodStart": "date",
-        "actualValue": "Revenue"
+        "actualValue": "actual"
     })
 
     df["date"] = pd.to_datetime(df["date"])
-    df["Revenue"] = pd.to_numeric(
-        df["Revenue"],
+
+    df["actual"] = pd.to_numeric(
+        df["actual"],
         errors="raise"
     )
 
-    return df
+    return df[["date", "actual"]]
 
-@celery_app.task  # can execute as bacground job by celery worker
-def test_kpi_forecasting():
+@celery_app.task(
+    bind=True,
+    name="tasks.forecast_kpi_task"
+)  
+def forecast_kpi_task(self, kpi_id, periods=3):
 
-    kpi_name = "Revenue"
-    kpi_id = KPI_ID_MAP[kpi_name]
+    try:
+        print(f"Starting forecasting for KPI: {kpi_id}")
 
-    df = fetch_kpi_observations(kpi_id)
+        df = fetch_kpi_observations(kpi_id)
 
-    print(f"Fetched {len(df)} actual observations.")
-    print(df.head().to_string(index=False))
+        print(f"Fetched {len(df)} observations.")
+        print(df.head().to_string(index=False))
 
-    cleaned_df = clean_time_series(df, kpi_columns=KPI_COLUMNS)
+        kpi_columns = ["actual"]
 
-    #run performance calculation engine
-    performance_df = run_performance_engine(cleaned_df)
-
-    print("\nPerformance Calculation Results: ")
-    print(performance_df.tail().to_string(index=False))
-
-    forecasts = forecast_all_kpis(
-        cleaned_df,
-        KPI_COLUMNS,
-        periods=3
-    )
-    forecasts.columns = (
-        forecasts.columns
-        .str.strip()
-        .str.replace(" ", "_")
-    )
-
-    print("Forecast columns:", forecasts.columns.tolist())
-    print(forecasts.head().to_string(index=False))
-
-    if forecasts.empty:
-        raise ValueError(
-            "No forecasts generated. Check the number of "
-            "historical observations and model-selection rules."
+        cleaned_df = clean_time_series(
+            df,
+            kpi_columns=kpi_columns
         )
 
-    print("Forecast sample: ")
-    print(forecasts.head().to_string(index=False))
+        forecasts = forecast_all_kpis(
+            cleaned_df, kpi_columns, periods=periods
+        )
 
-    #To the springboot API payload
-    payload = []
+        forecasts.columns = (
+            forecasts.columns.str.strip().str.replace(" ", "_")
+        )
 
-    for row in forecasts.itertuples(index=False):
-        payload.append({
-            "kpiId": kpi_id,
-            "forecastDate": pd.Timestamp(row.date).strftime("%Y-%m-%d"),
-            "forecastValue": float(row.forecast),
-            "lowerBound": float(row.lower_bound),
-            "upperBound": float(row.upper_bound),
-            "modelName": row.model
-        })
+        if forecasts.empty:
+            raise ValueError(
+                "No forecasts generated. Check the observation "
+                "count and model-selection rules."
+            )
 
-    response = requests.post(
-        f"{SPRING_BOOT_URL}/api/forecasts/batch",
-        json=payload,
-        timeout=30
-    )
+        print("Forecast results: ")
+        print(forecasts.to_string(index=False))
 
-    response.raise_for_status()
+        payload = []
 
-    return {
-        "status": "success",
-        "kpi_tested": kpi_name,
-        "actual_observations": len(df),
-        "forecast_rows_sent": len(payload),
-        "spring_boot_status": response.status_code
-    }
+        for row in forecasts.itertuples(index=False):
+            payload.append({
+                "kpiId": str(kpi_id),
+                "forecastDate": pd.Timestamp(
+                    row.date
+                ).strftime("%Y-%m-%d"),
+                "forecastValue": float(row.forecast),
+                "lowerBound": float(row.lower_bound),
+                "upperBound": float(row.upper_bound),
+                "modelName": row.model
+            })
+
+        response = requests.post(
+            f"{SPRING_BOOT_URL}/api/forecasts/batch",
+            json=payload,
+            timeout=30
+        )
+
+        response.raise_for_status()
+
+        result = {
+            "status": "SUCCESS",
+            "kpiId": str(kpi_id),
+            "actualObservations": len(df),
+            "forecastRowsSent": len(payload),
+            "modelName": str(forecasts.iloc[0]["model"]),
+            "springBootStatus": response.status_code
+        }
+
+        print(f"Forecasting completed: {result}")
+
+        return result
+
+    except Exception as exc:
+        print(f"Forecasting failed for KPI {kpi_id}: {exc}")
+
+        raise
+
+    
 
 @celery_app.task(
     bind=True,

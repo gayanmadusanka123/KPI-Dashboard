@@ -3,6 +3,7 @@ package com.ucsc.kpi_dashboard.Configurations;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -37,6 +38,16 @@ public class SecurityConfig {
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.POST,
                                 "/api/performance/results/batch"
+                        ).permitAll()
+
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/forecasts/batch"
+                        ).permitAll()
+
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/kpi-actuals/observations/**"
                         ).permitAll()
 
                         .requestMatchers("/api/forecasts/**").permitAll()//temporary to check the forecast
